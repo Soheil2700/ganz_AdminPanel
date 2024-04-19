@@ -43,7 +43,7 @@ const Products = () => {
          } else {
             const formData = new FormData();
             Array.from(values.images).forEach((i) => formData.append('image', i));
-            api.post(`/admin/api/product/image/${editData.id}`, formData)
+            api.post(`api/product/${editData.id}/image`, formData)
                .then((response) => {
                   mutate((prvs) => {
                      const products = [...prvs.products];
@@ -66,7 +66,7 @@ const Products = () => {
             setActiveStep(1);
          });
       } else {
-         api.post('admin/api/product', {
+         api.post('api/product', {
             ...productData,
             quantity: +productData?.quantity,
             price: +productData?.price,
@@ -75,7 +75,7 @@ const Products = () => {
             if (productData.images) {
                const formData = new FormData();
                Array.from(productData.images).forEach((i) => formData.append('image', i));
-               api.post(`/admin/api/product/image/${res.data.data.id}`, formData)
+               api.post(`api/product/${res.data.data.id}/image`, formData)
                   .then((response) => {
                      mutate((prvs) => {
                         const products = [...prvs.products];
@@ -188,7 +188,7 @@ const Products = () => {
                            <div className="px-6 py-7">
                               <div className="-mx-6 -mt-7 mb-7 h-[215px] overflow-hidden rounded-tl rounded-tr">
                                  <img
-                                    src={process.env.NEXT_PUBLIC_BASE_URL + item.images[item.images.length - 1]}
+                                    src={process.env.NEXT_PUBLIC_BASE_URL + item?.images[item?.images?.length - 1]}
                                     alt="cover"
                                     className="h-full w-full object-cover p-2"
                                  />
@@ -231,9 +231,7 @@ const Products = () => {
                                        <span
                                           className="hidden cursor-pointer rounded-full bg-primary p-1 transition-all group-hover:flex"
                                           onClick={() => {
-                                             api.delete(`admin/api/product/${item.id}`).then((res) =>
-                                                notifySuccess('محصول با موفقیت حذف شد')
-                                             );
+                                             api.delete(`api/product/${item.id}`).then((res) => notifySuccess('محصول با موفقیت حذف شد'));
                                           }}
                                        >
                                           <IconTrash className="text-white-light" />

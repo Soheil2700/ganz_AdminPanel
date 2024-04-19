@@ -96,9 +96,11 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
       setTimeout(() => {
          setHandleShow(true);
       }, 500);
-      api.get('auth/get-user').catch((err) => {
-         if (!router.asPath.startsWith('/auth')) router.push('/auth/login');
-      });
+      api.get('api/auth/authorize')
+         .then(() => router.push('/'))
+         .catch((err) => {
+            if (!router.asPath.startsWith('/auth')) router.push('/auth/login');
+         });
    }, []);
    if (!handleShow) {
       return <Loading title={'در حال احراز هویت '} />;

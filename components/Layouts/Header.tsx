@@ -154,7 +154,7 @@ const Header = () => {
    const { t, i18n } = useTranslation();
 
    const handleLogout = () => {
-      api.get('/auth/logout')
+      api.get('api/auth/logout')
          .then((res) => {
             router.push('/auth/login');
          })

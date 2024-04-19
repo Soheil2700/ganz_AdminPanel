@@ -25,22 +25,22 @@ const Login = () => {
          // router.push('/');
          const { mode } = formValues;
          if (mode === 'check') {
-            api.post('auth/check', { mobile: formValues.mobile.replace('0', '+98') })
+            api.post('api/auth/check', { mobile: formValues.mobile.replace('0', '+98') })
                .then((res) => {
-                  if (res.data?.code === 102) notifyWarning('ابتدا از طریق وبسایت حساب کاربری ایجاد کنید');
-                  else if (res.data?.code === 101) {
+                  if (!res.data?.registered) notifyWarning('ابتدا از طریق وبسایت حساب کاربری ایجاد کنید');
+                  else if (res.data?.registered) {
                      setShow(true);
                      setFormValues((prev) => ({ ...prev, mode: 'login' }));
                   }
                })
                .catch((err) => {});
          } else {
-            api.post('auth/login', {
+            api.post('api/auth/login', {
                ...formValues,
                mobile: formValues.mobile.replace('0', '+98'),
             })
                .then((res) => {
-                  mutate('get-user', res.data.user, { revalidate: false });
+                  mutate('authorize', res.data.user, { revalidate: false });
                   router.push('/');
                })
                .catch((err) => notifyError('کد وارد شده نامعتبر است!'));
@@ -62,7 +62,7 @@ const Login = () => {
             <img src="/assets/images/auth/bg-gradient.png" alt="image" className="h-full w-full object-cover" />
          </div>
 
-         <div className="relative flex min-h-screen items-center justify-center bg-[url(/assets/images/auth/map.png)] bg-cover bg-center bg-no-repeat px-6 py-10 sm:px-16 dark:bg-[#060818]">
+         <div className="relative flex min-h-screen items-center justify-center bg-[url(/assets/images/auth/map.png)] bg-cover bg-center bg-no-repeat px-6 py-10 dark:bg-[#060818] sm:px-16">
             <img
                src="/assets/images/auth/coming-soon-object1.png"
                alt="image"
@@ -72,7 +72,7 @@ const Login = () => {
             <img src="/assets/images/auth/coming-soon-object3.png" alt="image" className="absolute right-0 top-0 h-[300px]" />
             <img src="/assets/images/auth/polygon-object.svg" alt="image" className="absolute bottom-0 end-[28%]" />
             <div className="relative w-full max-w-[870px] rounded-md bg-[linear-gradient(45deg,#fff9f9_0%,rgba(255,255,255,0)_25%,rgba(255,255,255,0)_75%,_#fff9f9_100%)] p-2 dark:bg-[linear-gradient(52.22deg,#0E1726_0%,rgba(14,23,38,0)_18.66%,rgba(14,23,38,0)_51.04%,rgba(14,23,38,0)_80.07%,#0E1726_100%)]">
-               <div className="relative flex flex-col justify-center rounded-md bg-white/60 px-6 py-20 backdrop-blur-lg lg:min-h-[758px] dark:bg-black/50">
+               <div className="relative flex flex-col justify-center rounded-md bg-white/60 px-6 py-20 backdrop-blur-lg dark:bg-black/50 lg:min-h-[758px]">
                   <div className="mx-auto w-full max-w-[440px]">
                      <div className="mb-10">
                         <h1 className="text-3xl font-extrabold uppercase !leading-snug text-primary md:text-4xl">ورود</h1>
@@ -98,11 +98,11 @@ const Login = () => {
                         </div>
                         {show && (
                            <div>
-                              <label htmlFor="OTP">کد ارسالی</label>
+                              <label htmlFor="Code">کد ارسالی</label>
                               <div className="relative text-white-dark">
                                  <input
-                                    id="OTP"
-                                    name="otp"
+                                    id="Code"
+                                    name="code"
                                     type="password"
                                     placeholder="کد ارسالی را وارد کنید"
                                     className="form-input ps-10 placeholder:text-white-dark"
