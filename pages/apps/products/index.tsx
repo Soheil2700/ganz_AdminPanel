@@ -148,11 +148,12 @@ const Products = () => {
 
    useEffect(() => {
       dispatch(setPageTitle('محصولات'));
-      api.get('/admin/api/discount').then((res) => setDiscountCodes(res.data.discounts));
+      // api.get('/admin/api/discount').then((res) => setDiscountCodes(res.data.discounts));
    }, []);
 
    return (
-      <PermissionChecker roles={['ADMIN', 'SELLER']}>
+      // <PermissionChecker roles={['ADMIN', 'SELLER']}>
+      <>
          <div className="flex flex-col gap-8">
             <div className="flex gap-2">
                <Button
@@ -326,7 +327,8 @@ const Products = () => {
                />
             }
          />
-      </PermissionChecker>
+         {/* </PermissionChecker> */}
+      </>
    );
 };
 

@@ -23,12 +23,12 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
             type: 'text',
             required: true,
          },
-         {
-            label: 'مدل',
-            name: 'model',
-            type: 'text',
-            required: true,
-         },
+         // {
+         //    label: 'مدل',
+         //    name: 'model',
+         //    type: 'text',
+         //    required: true,
+         // },
          {
             label: 'slug',
             name: 'slug',
@@ -39,7 +39,7 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
             label: 'دسته بندی سطح یک',
             name: 'categoryName1',
             type: 'select',
-            options: optionData?.data || [],
+            options: optionData?.categories || [],
             optionId: 'id',
             optionLabel: 'label',
             display: !editPhase,
@@ -49,25 +49,25 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
             label: 'دسته بندی سطح دو',
             name: 'categoryName2',
             type: 'select',
-            options: optionData?.data?.find((item) => item.id === formValues.categoryName1)?.subCategories || [],
+            options: optionData?.categories?.find((item) => item.id === formValues.categoryName1)?.subCategories || [],
             optionId: 'id',
             optionLabel: 'label',
             display: !editPhase,
             required: !editPhase,
          },
-         {
-            label: 'دسته بندی سطح سه',
-            name: 'categoryName',
-            type: 'select',
-            options:
-               optionData?.data
-                  ?.find((item) => item.id === formValues.categoryName1)
-                  ?.subCategories?.find((item) => item.id === formValues.categoryName2)?.subCategories || [],
-            optionId: 'name',
-            optionLabel: 'label',
-            display: !editPhase,
-            required: !editPhase,
-         },
+         // {
+         //    label: 'دسته بندی سطح سه',
+         //    name: 'categoryName',
+         //    type: 'select',
+         //    options:
+         //       optionData?.data
+         //          ?.find((item) => item.id === formValues.categoryName1)
+         //          ?.subCategories?.find((item) => item.id === formValues.categoryName2)?.subCategories || [],
+         //    optionId: 'name',
+         //    optionLabel: 'label',
+         //    display: !editPhase,
+         //    required: !editPhase,
+         // },
          {
             label: 'تعداد موجودی',
             name: 'quantity',

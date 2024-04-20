@@ -90,8 +90,7 @@ const Category = () => {
    }, []);
 
    return (
-      // <PermissionChecker roles={['ADMIN']}>
-      <>
+      <PermissionChecker roles={['ADMIN']}>
          <div className="flex flex-col gap-7">
             <Button label="تعریف دسته بندی جدید" icon={<IconPlus />} onClick={() => setOpenModal(true)} />
             <Accordion accordionContent={section} active={active} setActive={setActive} />
@@ -116,8 +115,7 @@ const Category = () => {
                />
             }
          />
-      </>
-      // </PermissionChecker>
+      </PermissionChecker>
    );
 };
 
