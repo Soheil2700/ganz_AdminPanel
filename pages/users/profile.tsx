@@ -25,7 +25,6 @@ import useAuthUser from '@/services/api/getAuthUserQuery.api';
 const Profile = () => {
    const dispatch = useDispatch();
    const { data } = useAuthUser();
-   console.log('data', data);
 
    useEffect(() => {
       dispatch(setPageTitle('پروفایل کاربری'));
@@ -44,17 +43,17 @@ const Profile = () => {
                         <Image
                            width={300}
                            height={300}
-                           src={data?.image ? process.env.NEXT_PUBLIC_BASE_URL + data?.image : personPlaceholder}
+                           src={data?.user.image ? process.env.NEXT_PUBLIC_BASE_URL + data?.user.image : personPlaceholder}
                            alt="img"
                            className="mb-5 h-24 w-24 rounded-full  object-cover"
                         />
-                        <p className="text-xl font-semibold text-primary">{data?.first_name + ' ' + data?.last_name}</p>
+                        <p className="text-xl font-semibold text-primary">{data?.user.first_name + ' ' + data?.user.last_name}</p>
                      </div>
                      <ul className="m-auto mt-5 flex max-w-[160px] flex-col space-y-4 font-semibold text-white-dark">
                         <li className="flex items-center gap-2">
                            <IconPhone />
                            <span className="whitespace-nowrap" dir="ltr">
-                              {data?.mobile?.replace('+98', '0')}
+                              {data?.user.mobile?.replace('+98', '0')}
                            </span>
                         </li>
                      </ul>

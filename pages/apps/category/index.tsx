@@ -15,21 +15,20 @@ const Category = () => {
    const [active, setActive] = useState(1);
    const [formValues, setFormValues] = useState({});
 
-   let arr = [];
-   let accordionContent = [];
-   data?.data.map((item) => {
-      arr.push({ ...item, title: item.label, disabled: true });
-      item.subCategories.map((sub) => arr.push({ ...sub, title: sub.label, disabled: false }));
-      accordionContent.push({ title: item.label });
-   });
+   // let arr = [];
+   // let accordionContent = [];
+
+   // data?.categories?.map((item) => {
+   //    arr.push({ ...item, title: item.label, disabled: true });
+   //    item.subCategories.map((sub) => arr.push({ ...sub, title: sub.label, disabled: false }));
+   //    accordionContent.push({ title: item.label });
+   // });
 
    const section = useMemo(() => {
       const sectionGenerator = (categories) => {
          let result = [];
          categories.forEach((cat) => {
             let catCopy = { title: cat.label };
-            console.log(cat.level, cat.label, cat.subCategories);
-
             if (cat.subCategories && cat.subCategories.length) {
                //    console.log('if');
                catCopy.content = <Accordion accordionContent={sectionGenerator(cat.subCategories)} />;
@@ -43,7 +42,7 @@ const Category = () => {
          });
          return result;
       };
-      return sectionGenerator(data?.data || []);
+      return sectionGenerator(data?.categories || []);
    }, [data]);
 
    const fields = useMemo(
@@ -53,64 +52,36 @@ const Category = () => {
             name: 'name',
             type: 'text',
             required: true,
+            col: 4,
          },
          {
             label: 'لیبل دسته بندی',
             name: 'label',
             type: 'text',
             required: true,
+            col: 4,
          },
-         //  {
-         //     label: 'زیردسته بندی',
-         //     name: 'hasParent',
-         //     type: 'checkbox',
-         //  },
          {
-            label: 'سطح دسته بندی',
-            name: 'level',
+            label: 'دسته بندی بالاتر',
+            name: 'ParentCategoryId',
             type: 'select',
-            options: [
-               { id: 1, label: 'سطح یک' },
-               { id: 2, label: 'سطح دو' },
-               { id: 3, label: 'سطح سه' },
-            ],
+            options: data?.categories || [],
             optionId: 'id',
             optionLabel: 'label',
             required: true,
-         },
-         {
-            label: 'دسته بندی سطح یک',
-            name: 'ParentCategoryId1',
-            type: 'select',
-            options: data.data,
-            optionId: 'id',
-            optionLabel: 'label',
-            display: formValues?.level === 2 || formValues?.level === 3,
-         },
-         {
-            label: 'دسته بندی سطح دو',
-            name: 'ParentCategoryId2',
-            type: 'select',
-            options: data.data?.find((i) => i.id === formValues?.ParentCategoryId1)?.subCategories,
-            optionId: 'id',
-            optionLabel: 'label',
-            display: formValues?.level === 3,
+            col: 4,
          },
       ],
       [data, formValues]
    );
-   console.log(openModal);
 
    const onSubmit = useCallback((values) => {
-      api.post('admin/api/category', {
-         ...values,
-         ParentCategoryId: values.level === 2 ? +values.ParentCategoryId1 : values.level === 3 ? +values.ParentCategoryId2 : undefined,
-      })
+      api.post('api/category', values)
          .then((res) => {
             mutate((prvs) => {
                return { ...prvs, data: [...prvs.data, res.data.data] };
             });
-            notifySuccess('ذسته بندی با موفقیت ایجاد شد');
+            notifySuccess('دسته بندی با موفقیت ایجاد شد');
             setOpenModal(false);
          })
          .catch((err) => {
@@ -119,7 +90,8 @@ const Category = () => {
    }, []);
 
    return (
-      <PermissionChecker roles={['ADMIN']}>
+      // <PermissionChecker roles={['ADMIN']}>
+      <>
          <div className="flex flex-col gap-7">
             <Button label="تعریف دسته بندی جدید" icon={<IconPlus />} onClick={() => setOpenModal(true)} />
             <Accordion accordionContent={section} active={active} setActive={setActive} />
@@ -144,7 +116,8 @@ const Category = () => {
                />
             }
          />
-      </PermissionChecker>
+      </>
+      // </PermissionChecker>
    );
 };
 
