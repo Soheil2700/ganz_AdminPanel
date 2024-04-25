@@ -1,28 +1,26 @@
-import api from "../interceptor";
-import useSWR from "swr";
+import api from '../interceptor';
+import useSWR from 'swr';
 
 function fetcher() {
-  return api
-    .get("/admin/api/attribute")
-    .then((res) => res.data.attributes)
-    .catch((err) => []);
+   return api
+      .get('api/attribute')
+      .then((res) => res.data.attributes)
+      .catch((err) => []);
 }
 
 export function useAttributesQuery() {
-  return useSWR("attributes", fetcher);
+   return useSWR('attributes', fetcher);
 }
 
 // attributes of one category
 
-function getAttributeOfCategory(categoryName) {
-  return api
-    .get(`/api/category/${categoryName}/attributes`)
-    .then((res) => res.data.data)
-    .catch((err) => []);
+function getAttributeOfCategory(categoryId) {
+   return api
+      .get(`api/attribute?categoryId=${categoryId}`)
+      .then((res) => res.data.data)
+      .catch((err) => []);
 }
 
-export function useCategoriysAttributesQuery(categoryName) {
-  return useSWR(["cat-att", categoryName], () =>
-    getAttributeOfCategory(categoryName)
-  );
+export function useCategoriysAttributesQuery(categoryId) {
+   return useSWR(['cat-att', categoryId], () => getAttributeOfCategory(categoryId));
 }

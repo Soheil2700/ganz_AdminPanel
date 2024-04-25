@@ -53,7 +53,7 @@ const Products = () => {
                })
                .catch((err) => {});
          }
-         api.put(`admin/api/product/${editData.id}`, {
+         api.patch(`api/product/${editData.id}`, {
             model: values.model,
             slug: values.slug,
             quantity: +values.quantity,
@@ -152,8 +152,7 @@ const Products = () => {
    }, []);
 
    return (
-      // <PermissionChecker roles={['ADMIN', 'SELLER']}>
-      <>
+      <PermissionChecker roles={['ADMIN', 'SELLER']}>
          <div className="flex flex-col gap-8">
             <div className="flex gap-2">
                <Button
@@ -189,7 +188,7 @@ const Products = () => {
                            <div className="px-6 py-7">
                               <div className="-mx-6 -mt-7 mb-7 h-[215px] overflow-hidden rounded-tl rounded-tr">
                                  <img
-                                    src={process.env.NEXT_PUBLIC_BASE_URL + item?.images[item?.images?.length - 1]}
+                                    src={process.env.NEXT_PUBLIC_BASE_URL + item?.cover}
                                     alt="cover"
                                     className="h-full w-full object-cover p-2"
                                  />
@@ -204,7 +203,7 @@ const Products = () => {
                                     className="btn btn-primary mt-6"
                                     onClick={() => {
                                        setOpenDetailModal(true);
-                                       setProId(item.id);
+                                       setProId(item.slug);
                                     }}
                                  >
                                     جزییات
@@ -318,17 +317,10 @@ const Products = () => {
                         }
                      );
                   }}
-                  buttons={[
-                     {
-                        label: 'ثبت',
-                        type: 'submit',
-                     },
-                  ]}
                />
             }
          />
-         {/* </PermissionChecker> */}
-      </>
+      </PermissionChecker>
    );
 };
 
