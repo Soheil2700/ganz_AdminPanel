@@ -72,8 +72,8 @@ const SForm = ({
       }
    }, [editValues]);
    return (
-      <form className="my-4 dark:bg-black" onSubmit={formik.handleSubmit}>
-         <div className={`${formClassName} mt-5 grid grid-flow-row items-center justify-between gap-4 sm:grid-cols-2 lg:grid-cols-12`}>
+      <form className={`${formClassName} my-4 dark:bg-black`} onSubmit={formik.handleSubmit}>
+         <div className={`mt-5 grid grid-flow-row items-center justify-between gap-4 sm:grid-cols-2 lg:grid-cols-12`}>
             {formStructure
                .filter((i: any) => i.display !== false)
                .map((item: { [key: string]: any }, index) => {

@@ -47,7 +47,7 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
          },
          {
             label: 'دسته بندی سطح دو',
-            name: 'categoryName2',
+            name: 'categoryName',
             type: 'select',
             options: optionData?.categories?.find((item) => item.id === formValues.categoryName1)?.subCategories || [],
             optionId: 'id',

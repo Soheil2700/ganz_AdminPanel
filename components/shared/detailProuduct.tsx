@@ -18,15 +18,12 @@ const DetailProuduct = ({ proId }: Props) => {
    const [allData, setAllData] = useState([]);
 
    useEffect(() => {
-      api.get('admin/api/product/detail/' + proId).then((res) => {
+      api.get('api/product/' + proId).then((res) => {
          setAllData(res.data);
       });
    }, []);
-   console.log('allData', allData);
 
    const images = allData.images?.length > 4 ? allData.images?.slice(0, 4) : allData.images;
-
-   console.log('allData.images', images);
    return (
       <div className="flex w-full flex-col items-center justify-between gap-10 lg:flex-row lg:items-start">
          <div className="flex w-full lg:w-1/2 xl:w-1/3">
@@ -106,7 +103,7 @@ const DetailProuduct = ({ proId }: Props) => {
                      <span> {allData.description}</span>
                   </li>
                </ul>
-               <div className='flex gap-2'>
+               <div className="flex gap-2">
                   <span>تعداد : </span>
                   <span>{allData.quantity}</span>
                </div>

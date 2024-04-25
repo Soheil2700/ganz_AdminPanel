@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import AnimateHeight from 'react-animate-height';
 import IconCaretDown from '../Icon/IconCaretDown';
+import IconTrash from '@/components/Icon/IconTrash';
 
 interface Props {
    accordionContent: [];
@@ -26,6 +27,7 @@ const Accordion = ({ accordionContent = [] }: Props) => {
                         }`}
                         onClick={() => togglePara(index + 1)}
                      >
+                        {/* <IconTrash /> */}
                         {item.icon && item.icon}
                         <span>{item.title}</span>
                         <div className={`ltr:ml-auto rtl:mr-auto ${active === index + 1 ? 'rotate-180' : ''}`}>
