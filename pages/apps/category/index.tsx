@@ -15,29 +15,16 @@ const Category = () => {
    const [active, setActive] = useState(1);
    const [formValues, setFormValues] = useState({});
 
-   // let arr = [];
-   // let accordionContent = [];
-
-   // data?.categories?.map((item) => {
-   //    arr.push({ ...item, title: item.label, disabled: true });
-   //    item.subCategories.map((sub) => arr.push({ ...sub, title: sub.label, disabled: false }));
-   //    accordionContent.push({ title: item.label });
-   // });
-
    const section = useMemo(() => {
       const sectionGenerator = (categories) => {
          let result = [];
          categories.forEach((cat) => {
             let catCopy = { title: cat.label };
             if (cat.subCategories && cat.subCategories.length) {
-               //    console.log('if');
                catCopy.content = <Accordion accordionContent={sectionGenerator(cat.subCategories)} />;
             } else {
-               //    console.log('else');
                catCopy.content = cat.label;
-               //    catCopy.content = <div>{cat.label}</div>;
             }
-            // console.log(catCopy.content);
             result.push(catCopy);
          });
          return result;
@@ -79,7 +66,7 @@ const Category = () => {
       api.post('api/category', values)
          .then((res) => {
             mutate((prvs) => {
-               return { ...prvs, data: [...prvs.data, res.data.data] };
+               return { ...prvs, data: [...prvs.categories, res.data.categories] };
             });
             notifySuccess('دسته بندی با موفقیت ایجاد شد');
             setOpenModal(false);
