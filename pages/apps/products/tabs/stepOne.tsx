@@ -42,6 +42,7 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
             options: optionData?.categories || [],
             optionId: 'id',
             optionLabel: 'label',
+            onChange: (val) => setFormValues(val),
             display: !editPhase,
             required: !editPhase,
          },
@@ -49,11 +50,11 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
             label: 'دسته بندی سطح دو',
             name: 'categoryName',
             type: 'select',
-            options: optionData?.categories?.find((item) => item.id === formValues.categoryName1)?.subCategories || [],
+            options: optionData?.categories?.find((item) => item.id === formValues.value)?.subCategories || [],
             optionId: 'id',
             optionLabel: 'label',
             display: !editPhase,
-            required: !editPhase,
+            // required: !editPhase,
          },
          // {
          //    label: 'دسته بندی سطح سه',
@@ -102,17 +103,10 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
       <SForm
          formStructure={fields}
          submitHandler={(value) => {
-            setCategoryName(value.categoryName);
+            setCategoryName(value.categoryName1);
             onSubmit({ ...value, images });
          }}
          editValues={editData}
-         getValues={(val) => setFormValues(val)}
-         buttons={[
-            {
-               label: editPhase ? 'ثبت' : 'بعدی',
-               type: 'submit',
-            },
-         ]}
       />
    );
 };

@@ -1,25 +1,32 @@
-import React, { useEffect, useRef } from 'react';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import Textarea from './Textarea';
-import TextField from './TextField';
-import FileInput from './FileInput';
-import CheckBox from './CheckBox';
+'use client';
+import React, { useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { Button } from '@mui/material';
 import SelectInput from './SelectInput';
-import Switch from './Switch';
-import Button from '../Button';
-import NumberInput from './NumberInput';
+import TextField from './TextField';
+import CheckBox from './CheckBox';
+import SwitchBox from './SwitchBox';
+import FileInput from './FileInput';
 import DateInput from './DateInput';
+import PasswordInput from './PasswordInput';
 
 interface Props {
    formStructure: {}[];
-   editValues?: '';
+   editValues?: string | {};
    submitHandler: any;
-   buttons?: [];
-   showButtons?: boolean;
+   buttons?: {}[];
+   showSubmitButton?: boolean;
+   showResetButton?: boolean;
    formClassName?: string;
    getValues?: any;
    validations?: {};
+   submitButtonText?: string;
+   resetButtonText?: string;
+   disabelPadding?: boolean;
+   buttonFullWidth?: boolean;
+   submitClassName?: string;
+   resetClassName?: string;
+   endIcon?: JSX.Element;
 }
 
 const SForm = ({
@@ -27,11 +34,27 @@ const SForm = ({
    editValues = '',
    submitHandler = () => {},
    buttons = [],
-   showButtons = true,
+   showSubmitButton = true,
+   showResetButton = true,
    formClassName = '',
    getValues = () => {},
    validations = {},
+   submitButtonText,
+   resetButtonText,
+   disabelPadding = false,
+   buttonFullWidth = false,
+   resetClassName = '',
+   submitClassName = '',
+   endIcon,
 }: Props) => {
+   const {
+      control,
+      register,
+      handleSubmit,
+      reset,
+      setValue,
+      formState: { errors },
+   } = useForm();
    let colObj: any = {
       1: 'col-span-1',
       2: 'col-span-2',
@@ -40,198 +63,141 @@ const SForm = ({
       6: 'col-span-6',
       12: 'col-span-12',
    };
-   let initialValues: any = {};
-   const ref: any = useRef();
-   const requiredField = formStructure
-      .filter((item: any) => item.required)
-      .reduce(
-         (o, key: any) => ({
-            ...o,
-            [key.name]: Yup.string().required('این فیلد اجباری است!'),
-         }),
-         {}
-      );
-   Object.entries(formStructure).forEach(
-      ([key, value]: any) => (initialValues[value.name] = value.type === ('checkbox' || 'indicator') ? false : '')
-   );
-   const formik = useFormik({
-      initialValues,
-      onSubmit: (values) => {
-         submitHandler(values);
-      },
-      validationSchema: Yup.object({ ...requiredField, ...validations }),
-      enableReinitialize: true,
-      innerRef: ref,
-   });
-   useEffect(() => {
-      getValues(formik.values);
-   }, [formik.values]);
    useEffect(() => {
       if (editValues) {
-         formik.setValues(editValues);
+         Object.entries(editValues).forEach(([key, value]) => setValue(key, value));
       }
    }, [editValues]);
    return (
-      <form className={`${formClassName} my-4 dark:bg-black`} onSubmit={formik.handleSubmit}>
-         <div className={`mt-5 grid grid-flow-row items-center justify-between gap-4 sm:grid-cols-2 lg:grid-cols-12`}>
-            {formStructure
-               .filter((i: any) => i.display !== false)
-               .map((item: { [key: string]: any }, index) => {
-                  switch (item.type) {
-                     case 'text':
-                        return (
+      <form
+         className={`dark:bg-black ${!disabelPadding ? 'p-4' : ''}`}
+         onSubmit={handleSubmit((value) => {
+            for (const propety in value) {
+               if (!value[propety]) {
+                  delete value[propety];
+               }
+            }
+            submitHandler(value);
+         })}
+         /* @ts-ignore */
+         noValidate="noValidate"
+      >
+         <div className={`${formClassName} mt-5 grid grid-flow-row items-start justify-between gap-4 sm:grid-cols-2 lg:grid-cols-12`}>
+            {formStructure.map((item: any, index) => {
+               switch (item.type) {
+                  case 'text':
+                  case 'number':
+                     return (
+                        <div key={index} className={item.col ? colObj[item.col] : 'col-span-3'}>
+                           <TextField
+                              id={index}
+                              {...item}
+                              {...register(item.name)}
+                              customOnChange={item.onChange}
+                              control={control}
+                              error={errors[item.name]}
+                           />
+                        </div>
+                     );
+                  case 'password':
+                     return (
+                        <div key={index} className={item.col ? colObj[item.col] : 'col-span-3'}>
+                           <PasswordInput
+                              id={index}
+                              {...item}
+                              {...register(item.name)}
+                              customOnChange={item.onChange}
+                              control={control}
+                              error={errors[item.name]}
+                           />
+                        </div>
+                     );
+                  case 'textarea':
+                     return (
+                        <div className={item.col ? colObj[item.col] : 'col-span-12'}>
                            <TextField
                               key={index}
                               id={index}
                               {...item}
-                              col={item.col ? colObj[item.col] : 'col-span-3'}
-                              value={formik.values[item.name]}
-                              error={formik.errors[item.name]}
-                              touched={formik.touched[item.name]}
-                              onBlur={formik.handleBlur}
-                              onChange={formik.handleChange}
+                              multiline={true}
+                              rows={3}
+                              control={control}
+                              error={errors[item.name]}
                            />
-                        );
-                     case 'password':
-                        return (
-                           <TextField
-                              key={index}
-                              id={index}
-                              {...item}
-                              col={item.col ? colObj[item.col] : 'col-span-3'}
-                              value={formik.values[item.name]}
-                              error={formik.errors[item.name]}
-                              touched={formik.touched[item.name]}
-                              onBlur={formik.handleBlur}
-                              onChange={formik.handleChange}
-                           />
-                        );
-                     case 'textarea':
-                        return (
-                           <Textarea
-                              key={index}
-                              id={index}
-                              {...item}
-                              col={item.col ? colObj[item.col] : 'col-span-12'}
-                              value={formik.values[item.name]}
-                              error={formik.errors[item.name]}
-                              touched={formik.touched[item.name]}
-                              onBlur={formik.handleBlur}
-                              onChange={formik.handleChange}
-                           />
-                        );
-                     case 'file':
-                        return (
-                           <FileInput
-                              key={index}
-                              id={index}
-                              {...item}
-                              col={item.col ? colObj[item.col] : 'col-span-3'}
-                              // formik={formik}
-                              clear={formik.setFieldValue}
-                              value={formik.values[item.name]}
-                              error={formik.errors[item.name]}
-                              touched={formik.touched[item.name]}
-                              onBlur={formik.handleBlur}
-                              onChange={formik.handleChange}
-                              // customOnChange={formik.setFieldValue}
-                           />
-                        );
-                     case 'checkbox':
-                        return (
-                           <CheckBox
-                              key={index}
-                              id={index}
-                              {...item}
-                              col={item.col ? colObj[item.col] : 'col-span-3'}
-                              value={formik.values[item.name]}
-                              error={formik.errors[item.name]}
-                              touched={formik.touched[item.name]}
-                              onBlur={formik.handleBlur}
-                              onChange={formik.handleChange}
-                           />
-                        );
-                     case 'select':
-                        return (
-                           <SelectInput
-                              key={index}
-                              id={index}
-                              {...item}
-                              col={item.col ? colObj[item.col] : 'col-span-3'}
-                              value={formik.values[item.name]}
-                              error={formik.errors[item.name]}
-                              touched={formik.touched[item.name]}
-                              onBlur={formik.handleBlur}
-                              onChange={formik.setFieldValue}
-                           />
-                        );
-                     case 'multi_select':
-                        return (
-                           <SelectInput
-                              key={index}
-                              id={index}
-                              {...item}
-                              isMulti={true}
-                              col={item.col ? colObj[item.col] : 'col-span-3'}
-                              value={formik.values[item.name]}
-                              error={formik.errors[item.name]}
-                              touched={formik.touched[item.name]}
-                              onBlur={formik.handleBlur}
-                              onChange={formik.setFieldValue}
-                           />
-                        );
-                     case 'indicator':
-                        return (
-                           <Switch
-                              key={index}
-                              id={index}
-                              {...item}
-                              col={item.col ? colObj[item.col] : 'col-span-3'}
-                              value={formik.values[item.name]}
-                              error={formik.errors[item.name]}
-                              touched={formik.touched[item.name]}
-                              onBlur={formik.handleBlur}
-                              onChange={formik.handleChange}
-                           />
-                        );
-                     case 'number':
-                        return (
-                           <NumberInput
-                              key={index}
-                              id={index}
-                              {...item}
-                              col={item.col ? colObj[item.col] : 'col-span-3'}
-                              value={formik.values[item.name]}
-                              error={formik.errors[item.name]}
-                              touched={formik.touched[item.name]}
-                              onBlur={formik.handleBlur}
-                              onChange={formik.handleChange}
-                           />
-                        );
-                     case 'date':
-                        return (
-                           <DateInput
-                              key={index}
-                              id={index}
-                              {...item}
-                              col={item.col ? colObj[item.col] : 'col-span-3'}
-                              value={formik.values[item.name]}
-                              error={formik.errors[item.name]}
-                              touched={formik.touched[item.name]}
-                              onBlur={formik.handleBlur}
-                              onChange={(date) => formik.setFieldValue(item.name, date.toDate().getTime())}
-                           />
-                        );
-                     case 'component':
-                        return <div className="flex flex-col justify-center">{item.component}</div>;
-                     default:
-                        return <TextField id={index} key={index} />;
-                  }
-               })}
+                        </div>
+                     );
+                  case 'file':
+                     return (
+                        <div className={item.col ? colObj[item.col] : 'col-span-3'}>
+                           <FileInput key={index} id={index} {...item} control={control} error={errors[item.name]} />
+                        </div>
+                     );
+                  case 'checkbox':
+                     return (
+                        <div className={item.col ? colObj[item.col] : 'col-span-3'}>
+                           <CheckBox key={index} id={index} {...item} control={control} error={errors[item.name]} />
+                        </div>
+                     );
+                  case 'select':
+                     return (
+                        <div className={item.col ? colObj[item.col] : 'col-span-3'}>
+                           <SelectInput key={index} id={index} {...item} control={control} error={errors[item.name]} />
+                        </div>
+                     );
+                  case 'multi_select':
+                     return (
+                        <div className={item.col ? colObj[item.col] : 'col-span-3'}>
+                           <SelectInput key={index} id={index} {...item} multiple={true} control={control} error={errors[item.name]} />
+                        </div>
+                     );
+                  case 'switch':
+                     return (
+                        <div className={item.col ? colObj[item.col] : 'col-span-3'}>
+                           <SwitchBox key={index} id={index} {...item} control={control} error={errors[item.name]} />
+                        </div>
+                     );
+                  case 'date':
+                  case 'dateTime':
+                     return (
+                        <div className={item.col ? colObj[item.col] : 'col-span-3'}>
+                           <DateInput key={index} id={index} {...item} control={control} error={errors[item.name]} />
+                        </div>
+                     );
+                  case 'component':
+                     return <div className="flex flex-col justify-center">{item.component}</div>;
+                  default:
+                     return <TextField key={index} />;
+               }
+            })}
          </div>
-         <div className={`mt-2 flex ${!showButtons && 'hidden'} gap-3 rtl:flex-row-reverse`}>
-            {buttons.map((item: {}, index) => {
-               return <Button id={index} {...item} handleReset={formik.handleReset} />;
+         <div className={`flex ${buttonFullWidth ? 'flex-col' : 'rtl:flex-row-reverse'} mt-12 gap-3`}>
+            {showSubmitButton && (
+               <Button variant="contained" type="submit" className={`!min-w-28 ${submitClassName}`} color="primary" endIcon={endIcon}>
+                  {submitButtonText || 'تایید'}
+               </Button>
+            )}
+            {showResetButton && (
+               <Button variant="outlined" type="reset" className={resetClassName} onClick={reset} color="neutral" endIcon={endIcon}>
+                  {resetButtonText || 'لغو'}
+               </Button>
+            )}
+            {buttons.map((item: any, index) => {
+               return (
+                  <Button
+                     key={index}
+                     {...item}
+                     // ref={ref}
+                     type={item.type || 'button'}
+                     //   onClick={
+                     //     // item.type === "submit"
+                     //     //   ? formik.handleSubmit
+                     //     //   :
+                     //     item.type === "reset" ? formik.handleReset : item.onClick
+                     //   }
+                  >
+                     {item.label}
+                  </Button>
+               );
             })}
          </div>
       </form>
