@@ -70,12 +70,7 @@ const Attribute = () => {
    };
    return (
       <div className="flex flex-col gap-6">
-         <SForm
-            formStructure={fields}
-            submitHandler={handleSubmit}
-            buttons={[{ label: 'مرحله ي بعد', type: 'submit' }]}
-            formClassName="p-4"
-         />
+         <SForm formStructure={fields} submitHandler={handleSubmit} formClassName="p-4" />
          <div>
             <Accordion accordionContent={section} />
          </div>

@@ -32,12 +32,6 @@ const StepTwo = ({ categoryName, onSubmit }: Props) => {
          formStructure={formStructure}
          submitHandler={onSubmit}
          // editValues={editValues}
-         buttons={[
-            {
-               label: 'ایجاد',
-               type: 'submit',
-            },
-         ]}
       />
    );
 };

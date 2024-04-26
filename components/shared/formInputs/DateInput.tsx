@@ -1,48 +1,69 @@
-import React, { useState } from 'react';
-import { Calendar } from 'react-multi-date-picker';
-import persian from 'react-date-object/calendars/persian';
-import persian_fa from 'react-date-object/locales/persian_fa';
-import Modal from '@/components/shared/modal';
+import React from "react";
+import TextField from "@mui/material/TextField";
+import { AdapterDateFnsJalali } from "@mui/x-date-pickers/AdapterDateFnsJalali";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { useController } from "react-hook-form";
+import fa from "date-fns-jalali/locale/fa-IR";
 
-const DateInput = ({ id, label, required, isDisabled, value, onChange, col, error, touched }) => {
-   const [showModal, setShowModal] = useState(false);
-   const moment = require('moment-jalaali');
-   return (
-      <>
-         <div className={`${col} h-full`} onClick={() => !isDisabled && setShowModal(true)}>
-            <label>
-               {label}
-               {required && <span className="text-sm text-red-600">*</span>}
-            </label>
-            <div
-               className={`${col} flex h-[38px] cursor-pointer items-center justify-between rounded-[4px] border dark:border-[#17263c] dark:bg-[#121e32]`}
-            >
-               <label htmlFor={id} className="m-0 cursor-pointer pr-3 text-sm font-normal text-[#757678] dark:text-[#888ea8]">
-                  {value ? moment(value).format('jYYYY/jM/jD') : 'انتخاب زمان'}
-               </label>
-            </div>
-            <p className="mt-1 text-xs text-red-500">{error && touched ? error : '\xa0'}</p>
-         </div>
-         <Modal
-            open={showModal}
-            setOpen={setShowModal}
-            size="fit"
-            content={
-               <div className="flex justify-center">
-                  <Calendar
-                     calendar={persian}
-                     locale={persian_fa}
-                     value={value}
-                     onChange={(e) => {
-                        onChange(e);
-                        setShowModal(false);
-                     }}
-                  />
-               </div>
-            }
-         />
-      </>
-   );
+interface Props {
+  label: string;
+  control: any;
+  name: string;
+  error: any;
+  required: boolean;
+  type: string;
+  restProps: any;
+}
+
+const DateInput = ({ label, name, control, type, required, error, ...restProps }: Props) => {
+  const Picker = type === "date" ? DatePicker : type === "time" ? TimePicker : DateTimePicker;
+  const { field } = useController({
+    name,
+    control,
+    rules: { required },
+  });
+  return (
+    <>
+      <LocalizationProvider dateAdapter={AdapterDateFnsJalali} adapterLocale={fa}>
+        <Picker
+          label={label}
+          //@ts-ignore
+          mask={type === "date" ? "____/__/__" : type === "time" ? "__:__" : "____/__/__ — __:__"}
+          inputFormat={type === "date" ? "yyyy/MM/dd" : type === "time" ? "HH:mm" : "yyyy/MM/dd — HH:mm"}
+          ampm={false}
+          onChange={field.onChange} // send value to hook form
+          onBlur={field.onBlur} // notify when input is touched/blur
+          //   value={field.value || ""} // input value
+          name={field.name} // send down the input name
+          inputRef={field.ref}
+          // onAccept={handle_change}
+          OpenPickerButtonProps={{
+            size: "small",
+            className: {
+              paddingLeft: "16px !important",
+              "& svg": {
+                fontSize: 24,
+              },
+            },
+          }}
+          renderInput={(params: any) => <TextField {...params} size="small" />}
+          slotProps={{
+            field: { clearable: true },
+            textField: {
+              helperText: error?.type === "required" && "این فیلد اجباری است!",
+              size: "small",
+              fullWidth: true,
+              error: error,
+              required: required,
+            },
+          }}
+        />
+      </LocalizationProvider>
+    </>
+  );
 };
 
 export default DateInput;

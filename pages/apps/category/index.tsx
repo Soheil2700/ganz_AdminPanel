@@ -93,12 +93,6 @@ const Category = () => {
                   formStructure={fields}
                   submitHandler={onSubmit}
                   getValues={(val) => setFormValues(val)}
-                  buttons={[
-                     {
-                        label: 'ایجاد',
-                        type: 'submit',
-                     },
-                  ]}
                />
             }
          />
