@@ -67,14 +67,16 @@ const Products = () => {
          });
       } else {
          api.post('api/product', {
-            ...productData,
-            quantity: +productData?.quantity,
-            price: +productData?.price,
-            attributes: arr.filter((item) => item.id !== 0),
+            ...values,
+            quantity: +values?.quantity,
+            price: +values?.price,
+            // attributes: arr.filter((item) => item.id !== 0),
+            bulk_cargo: false,
+            step: 1,
          }).then((res) => {
-            if (productData.images) {
+            if (values.images) {
                const formData = new FormData();
-               Array.from(productData.images).forEach((i) => formData.append('image', i));
+               Array.from(values.images).forEach((i) => formData.append('image', i));
                api.post(`api/product/${res.data.data.id}/image`, formData)
                   .then((response) => {
                      mutate((prvs) => {
@@ -93,12 +95,12 @@ const Products = () => {
    };
 
    const onSubmit = (values: {}) => {
-      if (activeStep === 2 || editPhase) {
-         sendData(values);
-      } else if (activeStep === 1) {
-         setProductData((prev) => ({ ...prev, ...values }));
-         setActiveStep(2);
-      }
+      // if (activeStep === 2 || editPhase) {
+      sendData(values);
+      // } else if (activeStep === 1) {
+      setProductData((prev) => ({ ...prev, ...values }));
+      setActiveStep(2);
+      // }
    };
 
    const steps = editPhase
