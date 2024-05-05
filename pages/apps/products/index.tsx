@@ -53,12 +53,11 @@ const Products = () => {
                })
                .catch((err) => {});
          }
+         delete values.cover;
          api.patch(`api/product/${editData.id}`, {
-            model: values.model,
-            slug: values.slug,
+            ...values,
             quantity: +values.quantity,
             price: +values.price,
-            description: values.description,
          }).then((res) => {
             mutate();
             setOpenModal(false);
@@ -95,12 +94,13 @@ const Products = () => {
    };
 
    const onSubmit = (values) => {
-      // if (activeStep === 2 || editPhase) {
-      sendData(values);
-      // } else if (activeStep === 1) {
-      setProductData((prev) => ({ ...prev, ...values }));
-      // setActiveStep(2);
-      // }
+      if (activeStep === 2 || editPhase) {
+         sendData(values);
+      } else if (activeStep === 1) {
+         sendData(values);
+         setProductData((prev) => ({ ...prev, ...values }));
+         setActiveStep(2);
+      }
    };
 
    const steps = editPhase
