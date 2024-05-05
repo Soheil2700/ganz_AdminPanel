@@ -67,15 +67,17 @@ const Products = () => {
          });
       } else {
          api.post('api/product', {
-            ...productData,
-            quantity: +productData?.quantity,
-            price: +productData?.price,
-            attributes: arr.filter((item) => item.id !== 0),
+            ...values,
+            quantity: +values?.quantity,
+            price: +values?.price,
+            // attributes: arr.filter((item) => item.id !== 0),
+            bulk_cargo: false,
+            step: 1,
          }).then((res) => {
-            if (productData.images) {
+            if (values.images) {
                const formData = new FormData();
-               Array.from(productData.images).forEach((i) => formData.append('image', i));
-               api.post(`api/product/${res.data.data.id}/image`, formData)
+               Array.from(values.images).forEach((i) => formData.append('image', i));
+               api.post(`api/product/${res.data.product.id}/image`, formData)
                   .then((response) => {
                      mutate((prvs) => {
                         const products = [...prvs.products];
@@ -92,13 +94,13 @@ const Products = () => {
       }
    };
 
-   const onSubmit = (values: {}) => {
-      if (activeStep === 2 || editPhase) {
-         sendData(values);
-      } else if (activeStep === 1) {
-         setProductData((prev) => ({ ...prev, ...values }));
-         setActiveStep(2);
-      }
+   const onSubmit = (values) => {
+      // if (activeStep === 2 || editPhase) {
+      sendData(values);
+      // } else if (activeStep === 1) {
+      setProductData((prev) => ({ ...prev, ...values }));
+      // setActiveStep(2);
+      // }
    };
 
    const steps = editPhase
@@ -217,8 +219,8 @@ const Products = () => {
                                        <span
                                           className="hidden cursor-pointer rounded-full bg-primary p-1 transition-all group-hover:flex"
                                           onClick={() => {
-                                             if (item.id) {
-                                                api.get('admin/api/product/detail/' + item.id).then((res) => {
+                                             if (item.slug) {
+                                                api.get(`api/product/${item.slug}`).then((res) => {
                                                    setEditData(res.data);
                                                 });
                                              }
@@ -231,7 +233,10 @@ const Products = () => {
                                        <span
                                           className="hidden cursor-pointer rounded-full bg-primary p-1 transition-all group-hover:flex"
                                           onClick={() => {
-                                             api.delete(`api/product/${item.id}`).then((res) => notifySuccess('محصول با موفقیت حذف شد'));
+                                             api.delete(`api/product/${item.id}`).then((res) => {
+                                                mutate();
+                                                notifySuccess('محصول با موفقیت حذف شد');
+                                             });
                                           }}
                                        >
                                           <IconTrash className="text-white-light" />

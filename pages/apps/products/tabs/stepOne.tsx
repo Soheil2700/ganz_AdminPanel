@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import SForm from '@/components/shared/formInputs/SForm';
 import { useCategoriesQuery } from '@/services/api/getCategoriesQuery.api';
 
@@ -15,6 +15,12 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
    const { data: optionData } = useCategoriesQuery();
    const [formValues, setFormValues] = useState({});
 
+   const allSubCategories = () => {
+      let arr = [];
+      optionData?.categories.forEach((item) => item.subCategories.forEach((i) => arr.push(i)));
+      return arr;
+   };
+
    const fields = useMemo(
       () => [
          {
@@ -23,15 +29,15 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
             type: 'text',
             required: true,
          },
-         // {
-         //    label: 'مدل',
-         //    name: 'model',
-         //    type: 'text',
-         //    required: true,
-         // },
          {
             label: 'slug',
             name: 'slug',
+            type: 'text',
+            required: true,
+         },
+         {
+            label: 'خلاصه محصول',
+            name: 'summary',
             type: 'text',
             required: true,
          },
@@ -50,25 +56,16 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
             label: 'دسته بندی سطح دو',
             name: 'categoryName',
             type: 'select',
-            options: optionData?.categories?.find((item) => item.id === formValues.value)?.subCategories || [],
-            optionId: 'id',
+            options: formValues.value
+               ? optionData?.categories?.find((item) => item.id === formValues.value)?.subCategories
+               : editPhase
+               ? allSubCategories()
+               : [],
+            optionId: 'name',
             optionLabel: 'label',
             display: !editPhase,
-            // required: !editPhase,
+            required: !editPhase,
          },
-         // {
-         //    label: 'دسته بندی سطح سه',
-         //    name: 'categoryName',
-         //    type: 'select',
-         //    options:
-         //       optionData?.data
-         //          ?.find((item) => item.id === formValues.categoryName1)
-         //          ?.subCategories?.find((item) => item.id === formValues.categoryName2)?.subCategories || [],
-         //    optionId: 'name',
-         //    optionLabel: 'label',
-         //    display: !editPhase,
-         //    required: !editPhase,
-         // },
          {
             label: 'تعداد موجودی',
             name: 'quantity',
@@ -81,12 +78,14 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
             required: true,
          },
          {
+            label: 'تصویر محصول',
             name: 'image',
             title: 'عکس محصول را بارگذاری نمایید',
             type: 'file',
-            label: 'img',
             multiple: true,
-            customOnChange: (name, value) => setImages(value),
+            customOnChange: (value) => {
+               setImages(value);
+            },
             disabled: editPhase,
          },
          {
@@ -99,16 +98,7 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
       [formValues, editPhase, optionData]
    );
 
-   return (
-      <SForm
-         formStructure={fields}
-         submitHandler={(value) => {
-            setCategoryName(value.categoryName1);
-            onSubmit({ ...value, images });
-         }}
-         editValues={editData}
-      />
-   );
+   return <SForm formStructure={fields} submitHandler={(value) => onSubmit({ ...value, images })} editValues={editData} />;
 };
 
 export default StepOne;
