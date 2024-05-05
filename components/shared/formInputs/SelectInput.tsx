@@ -56,13 +56,13 @@ const SelectInput = ({
                   ? (selected) => (
                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                           {selected.map((value: any) => {
-                             const label = options.find((i: any) => i[optionId] === value)[optionLabel];
+                             const label = options.find((i: any) => i[optionId] === value)?.[optionLabel];
                              return <Chip key={value} label={label} className="!h-[23px]" />;
                           })}
                        </Box>
                     )
                   : (selected) => {
-                       const label = options.find((i: any) => i[optionId] === selected)[optionLabel];
+                       const label = options.find((i: any) => i[optionId] === selected)?.[optionLabel];
                        return <Chip key={selected} label={label} className="!h-[23px]" />;
                     }
             }
