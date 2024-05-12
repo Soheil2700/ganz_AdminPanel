@@ -162,7 +162,7 @@ const CustomSidebar = () => {
                         </Link>
                      </li>
 
-                     <li className="menu nav-item">
+                     {/* <li className="menu nav-item">
                         <Link href="/apps/discount" className="nav-link group">
                            <div className="flex items-center">
                               <IconShoppingBag className="shrink-0 group-hover:!text-primary" />
@@ -171,7 +171,7 @@ const CustomSidebar = () => {
                               </span>
                            </div>
                         </Link>
-                     </li>
+                     </li> */}
 
                      {/* <h2 className="-mx-4 mb-1 flex items-center bg-white-light/30 px-7 py-3 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
                         <IconMinus className="hidden h-5 w-4 flex-none" />
