@@ -18,6 +18,7 @@ import DetailProuduct from '@/components/shared/detailProuduct';
 import DropDownMenu from '../../../components/shared/dropDownMenu/DropDownMenu';
 import IconSquareCheck from '@/components/Icon/IconSquareCheck';
 import SForm from '@/components/shared/formInputs/SForm';
+import moment from 'moment-jalaali';
 
 const Products = () => {
    const [openModal, setOpenModal] = useState(false);
@@ -298,29 +299,51 @@ const Products = () => {
             open={openDiscountModal}
             setOpen={setOpenDiscountModal}
             title="تخصیص کد تخفیف"
-            size="small"
+            size="medium"
             content={
                <SForm
                   formStructure={[
                      {
-                        label: 'کد تخفیف خود را انتخاب کنید',
-                        name: 'discountId',
-                        type: 'select',
-                        options: discountCodes.filter((item) => item.discountType === 'PRODUCT'),
-                        optionId: 'id',
-                        optionLabel: 'label',
-                        col: 12,
+                        label: 'نام تخفیف',
+                        name: 'label',
+                        type: 'text',
+                        col: 4,
+                        required: true,
+                     },
+                     {
+                        label: 'درصد',
+                        name: 'percent',
+                        type: 'number',
+                        col: 4,
+                        required: true,
+                     },
+                     {
+                        label: 'تاریخ شروع',
+                        name: 'fromDate',
+                        type: 'date',
+                        col: 4,
+                        required: true,
+                     },
+                     {
+                        label: 'تاریخ پایان',
+                        name: 'thruDate',
+                        type: 'date',
+                        col: 4,
                         required: true,
                      },
                   ]}
                   submitHandler={(val) => {
-                     api.put('/admin/api/discount/assign', { discountType: 'PRODUCT', ...val, assignList: selectedProducts }).then(
-                        (res) => {
-                           notifySuccess('تخفیف تخصیص داده شد');
-                           setOpenDiscountModal(false);
-                           setSelectedProducts([]);
-                        }
-                     );
+                     api.post('api/discount', {
+                        ...val,
+                        percent: +val.percent,
+                        fromDate: moment(val.fromDate).format('YYYY-MM-DD'),
+                        thruDate: moment(val.thruDate).format('YYYY-MM-DD'),
+                        product_ids: selectedProducts,
+                     }).then((res) => {
+                        notifySuccess('تخفیف تخصیص داده شد');
+                        setOpenDiscountModal(false);
+                        setSelectedProducts([]);
+                     });
                   }}
                />
             }
