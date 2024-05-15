@@ -69,7 +69,12 @@ const Attribute = () => {
       });
    };
    const handleSubmit = (values) => {
-      api.post('api/attribute', { ...values, values: [] }).catch((err) => console.log(err));
+      api.post('api/attribute', { ...values, values: [] })
+         .then((res) => {
+            getAtt(category);
+            notifySuccess('ویژگی با موفقیت ایجاد شد');
+         })
+         .catch((err) => console.log(err));
    };
    const handleSubmit2 = (values) => {
       let attributeId = values.attributeId;
@@ -80,7 +85,12 @@ const Attribute = () => {
             arr.push({ label: values[`label${index + 1}`], value: values[`value${index + 1}`] });
          }
       });
-      api.post('api/attribute/value', { attributeId, values: arr }).catch((err) => console.log(err));
+      api.post('api/attribute/value', { attributeId, values: arr })
+         .then((res) => {
+            getAtt(category);
+            notifySuccess('مقادیر با موفقیت ایجاد شدند');
+         })
+         .catch((err) => console.log(err));
    };
    useEffect(() => {
       setAttFields([
