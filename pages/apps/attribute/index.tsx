@@ -5,6 +5,7 @@ import api from '../../../services/interceptor';
 import { Button, Card, CardContent, CardHeader } from '@mui/material';
 import HoverTable from '../../../components/shared/tables/hoverTable';
 import { notifySuccess } from '../../../components/shared/notify/SNotify';
+import { useCategoriysAttributesQuery } from '../../../services/api/getAttributesQuery';
 
 const Attribute = () => {
    const [category, setCategory] = useState('');
@@ -182,9 +183,11 @@ const Attribute = () => {
                   ]}
                   tableData={attributes}
                   deleteIconOnClick={(val) => {
-                     api.get(`api/attribute/${val.id}`).then((res) => {
-                        notifySuccess('ویژگی با موفقیت حذف شد');
-                     });
+                     api.delete(`api/attribute/${val.id}`)
+                        .then((res) => {
+                           notifySuccess('ویژگی با موفقیت حذف شد');
+                        })
+                        .then((res) => getAtt(category));
                   }}
                />
             </CardContent>
