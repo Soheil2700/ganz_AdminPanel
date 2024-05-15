@@ -3,6 +3,8 @@ import { useCategoriesQuery } from '@/services/api/getCategoriesQuery.api';
 import SForm from '@/components/shared/formInputs/SForm';
 import api from '../../../services/interceptor';
 import { Button, Card, CardContent, CardHeader } from '@mui/material';
+import HoverTable from '../../../components/shared/tables/hoverTable';
+import { notifySuccess } from '../../../components/shared/notify/SNotify';
 
 const Attribute = () => {
    const [show, setShow] = useState(0);
@@ -30,22 +32,7 @@ const Attribute = () => {
       ],
       [categories]
    );
-   const [attFields, setAttFields] = useState([
-      {
-         type: 'text',
-         name: 'label1',
-         label: 'لیبل',
-         col: 6,
-         required: true,
-      },
-      {
-         type: 'text',
-         name: 'value1',
-         label: 'مقدار',
-         col: 6,
-         required: true,
-      },
-   ]);
+   const [attFields, setAttFields] = useState();
    // const section = useMemo(() => {
    //    const sectionGenerator = (attributes) => {
    //       let result = [];
@@ -68,18 +55,45 @@ const Attribute = () => {
    //    };
    //    return sectionGenerator(attributes || []);
    // }, [attributes]);
+   const getAtt = (category_name) => {
+      api.get('api/attribute', {
+         params: { category_name },
+      }).then((res) => {
+         let data = res.data.attributes.map((item) => {
+            const label = item.AttributeValue.map((i) => i.label).join('، ');
+            return { ...item, label };
+         });
+         setAttributes(data);
+      });
+   };
    const handleSubmit = (values) => {
-      api.post('api/attribute', values).catch((err) => console.log(err));
+      api.post('api/attribute', { ...values, values: [] }).catch((err) => console.log(err));
    };
    const handleSubmit2 = (values) => {
+      let attributeId = values.attributeId;
+      delete values.attributeId;
       let arr = [];
       Object.entries(values).forEach((item, index) => {
          if (values[`label${index + 1}`]) {
             arr.push({ label: values[`label${index + 1}`], value: values[`value${index + 1}`] });
          }
       });
-      api.post('api/attribute/value', { values: arr }).catch((err) => console.log(err));
+      api.post('api/attribute/value', { attributeId, values: arr }).catch((err) => console.log(err));
    };
+   useEffect(() => {
+      setAttFields([
+         {
+            name: 'attributeId',
+            label: 'ویژگی',
+            type: 'select',
+            options: attributes,
+            optionKey: 'id',
+            optionLabel: 'name',
+            required: true,
+            col: 12,
+         },
+      ]);
+   }, [attributes]);
    return (
       <div className="flex flex-col gap-6">
          <Card>
@@ -87,63 +101,77 @@ const Attribute = () => {
                title="ویژگی ها"
                action={
                   <div className="flex gap-2">
-                     <Button variant="outlined" onClick={() => setShow(1)}>
-                        ویژگی جدید
-                     </Button>
-                     <Button
-                        variant="outlined"
-                        onClick={() => {
-                           setAttFields((prev) => [
-                              ...prev,
-                              {
-                                 type: 'text',
-                                 name: `label${prev.length / 2 + 1}`,
-                                 label: 'لیبل',
-                                 col: 6,
-                                 required: true,
-                              },
-                              {
-                                 type: 'text',
-                                 name: `value${prev.length / 2 + 1}`,
-                                 label: 'مقدار',
-                                 col: 6,
-                                 required: true,
-                              },
-                           ]);
-                           setShow(2);
-                        }}
-                     >
-                        مقدار جدید
-                     </Button>
+                     {attributes.length ? (
+                        <>
+                           <Button variant="outlined" onClick={() => setShow(1)}>
+                              ویژگی جدید
+                           </Button>
+                           <Button
+                              variant="outlined"
+                              onClick={() => {
+                                 setAttFields((prev) => [
+                                    ...prev,
+                                    {
+                                       type: 'text',
+                                       name: `label${(prev.length - 1) / 2 + 1}`,
+                                       label: 'لیبل',
+                                       col: 6,
+                                       required: true,
+                                    },
+                                    {
+                                       type: 'text',
+                                       name: `value${(prev.length - 1) / 2 + 1}`,
+                                       label: 'مقدار',
+                                       col: 6,
+                                       required: true,
+                                    },
+                                 ]);
+                                 setShow(2);
+                              }}
+                           >
+                              مقدار جدید
+                           </Button>
+                        </>
+                     ) : (
+                        <></>
+                     )}
                   </div>
                }
             />
             <CardContent>
+               <SForm
+                  formStructure={[
+                     {
+                        label: 'برای مشاهده ویژگی ها، ابتدا یک دسته بندی را انتخاب کنید',
+                        name: 'category_name',
+                        type: 'select',
+                        options: categories?.categories,
+                        optionKey: 'name',
+                        optionLabel: 'label',
+                        required: true,
+                        col: 6,
+                     },
+                  ]}
+                  resetOnSubmit={false}
+                  submitHandler={(val) => getAtt(val.category_name)}
+               />
                {show === 1 && <SForm formStructure={fields} submitHandler={handleSubmit} />}
-               {show === 2 && <SForm formStructure={attFields} submitHandler={handleSubmit2} />}
+               {show === 2 && <SForm formStructure={attFields} submitHandler={handleSubmit2} resetOnSubmit={false} />}
+               <HoverTable
+                  title="لیست ویژگی ها"
+                  headers={[
+                     { label: 'نام', type: 'text', name: 'name' },
+                     { label: 'مقادیر', type: 'text', name: 'label' },
+                  ]}
+                  tableData={attributes}
+                  deleteIconOnClick={(val) => {
+                     api.get(`api/attribute/${val.id}`).then((res) => {
+                        notifySuccess('ویژگی با موفقیت حذف شد');
+                     });
+                  }}
+               />
             </CardContent>
          </Card>
-         <div>
-            <SForm
-               formStructure={[
-                  {
-                     label: 'برای مشاهده ویژگی ها، ابتدا یک دسته بندی را انتخاب کنید',
-                     name: 'category_name',
-                     type: 'select',
-                     options: categories?.categories,
-                     optionKey: 'name',
-                     optionLabel: 'label',
-                     required: true,
-                     col: 6,
-                  },
-               ]}
-               submitHandler={(val) => {
-                  api.get('api/attribute', {
-                     params: { category_name: val.category_name },
-                  });
-               }}
-            />
-         </div>
       </div>
    );
 };

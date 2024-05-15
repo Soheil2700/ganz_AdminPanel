@@ -29,6 +29,7 @@ interface Props {
    buttonFullWidth?: boolean;
    submitClassName?: string;
    resetClassName?: string;
+   resetOnSubmit?: boolean;
    endIcon?: JSX.Element;
 }
 
@@ -49,6 +50,7 @@ const SForm = ({
    buttonFullWidth = false,
    resetClassName = '',
    submitClassName = '',
+   resetOnSubmit = true,
    endIcon,
 }: Props) => {
    const {
@@ -80,6 +82,9 @@ const SForm = ({
                if (!value[propety]) {
                   delete value[propety];
                }
+            }
+            if (resetOnSubmit) {
+               reset();
             }
             submitHandler(value);
          })}
