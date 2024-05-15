@@ -7,6 +7,7 @@ import HoverTable from '../../../components/shared/tables/hoverTable';
 import { notifySuccess } from '../../../components/shared/notify/SNotify';
 
 const Attribute = () => {
+   const [category, setCategory] = useState('');
    const [show, setShow] = useState(0);
    const [attributes, setAttributes] = useState([]);
    const { data: categories } = useCategoriesQuery();
@@ -32,7 +33,7 @@ const Attribute = () => {
       ],
       [categories]
    );
-   const [attFields, setAttFields] = useState();
+   const [attFields, setAttFields] = useState([]);
    // const section = useMemo(() => {
    //    const sectionGenerator = (attributes) => {
    //       let result = [];
@@ -92,6 +93,20 @@ const Attribute = () => {
             required: true,
             col: 12,
          },
+         {
+            type: 'text',
+            name: `label1`,
+            label: 'لیبل',
+            col: 6,
+            required: true,
+         },
+         {
+            type: 'text',
+            name: `value1`,
+            label: 'مقدار',
+            col: 6,
+            required: true,
+         },
       ]);
    }, [attributes]);
    return (
@@ -101,7 +116,7 @@ const Attribute = () => {
                title="ویژگی ها"
                action={
                   <div className="flex gap-2">
-                     {attributes.length ? (
+                     {category && (
                         <>
                            <Button variant="outlined" onClick={() => setShow(1)}>
                               ویژگی جدید
@@ -109,31 +124,29 @@ const Attribute = () => {
                            <Button
                               variant="outlined"
                               onClick={() => {
-                                 setAttFields((prev) => [
-                                    ...prev,
-                                    {
-                                       type: 'text',
-                                       name: `label${(prev.length - 1) / 2 + 1}`,
-                                       label: 'لیبل',
-                                       col: 6,
-                                       required: true,
-                                    },
-                                    {
-                                       type: 'text',
-                                       name: `value${(prev.length - 1) / 2 + 1}`,
-                                       label: 'مقدار',
-                                       col: 6,
-                                       required: true,
-                                    },
-                                 ]);
+                                 // setAttFields((prev) => [
+                                 //    ...prev,
+                                 //    {
+                                 //       type: 'text',
+                                 //       name: `label${(prev.length - 1) / 2 + 1}`,
+                                 //       label: 'لیبل',
+                                 //       col: 6,
+                                 //       required: true,
+                                 //    },
+                                 //    {
+                                 //       type: 'text',
+                                 //       name: `value${(prev.length - 1) / 2 + 1}`,
+                                 //       label: 'مقدار',
+                                 //       col: 6,
+                                 //       required: true,
+                                 //    },
+                                 // ]);
                                  setShow(2);
                               }}
                            >
                               مقدار جدید
                            </Button>
                         </>
-                     ) : (
-                        <></>
                      )}
                   </div>
                }
@@ -153,10 +166,14 @@ const Attribute = () => {
                      },
                   ]}
                   resetOnSubmit={false}
-                  submitHandler={(val) => getAtt(val.category_name)}
+                  submitHandler={(val) => {
+                     setCategory(val.category_name);
+                     getAtt(val.category_name);
+                  }}
+                  resetHandler={() => setCategory('')}
                />
-               {show === 1 && <SForm formStructure={fields} submitHandler={handleSubmit} />}
-               {show === 2 && <SForm formStructure={attFields} submitHandler={handleSubmit2} resetOnSubmit={false} />}
+               {show === 1 && category && <SForm formStructure={fields} submitHandler={handleSubmit} />}
+               {show === 2 && category && <SForm formStructure={attFields} submitHandler={handleSubmit2} resetOnSubmit={false} />}
                <HoverTable
                   title="لیست ویژگی ها"
                   headers={[
