@@ -7,6 +7,7 @@ import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { useController } from "react-hook-form";
 import fa from "date-fns-jalali/locale/fa-IR";
+import { Calendar } from "@untitled-ui/icons-react";
 
 interface Props {
   label: string;
@@ -27,9 +28,10 @@ const DateInput = ({ label, name, control, type, required, error, ...restProps }
   });
   return (
     <>
-      <LocalizationProvider dateAdapter={AdapterDateFnsJalali} adapterLocale={fa}>
+      <LocalizationProvider dateAdapter={AdapterDateFnsJalali}>
         <Picker
           label={label}
+          {...restProps}
           //@ts-ignore
           mask={type === "date" ? "____/__/__" : type === "time" ? "__:__" : "____/__/__ — __:__"}
           inputFormat={type === "date" ? "yyyy/MM/dd" : type === "time" ? "HH:mm" : "yyyy/MM/dd — HH:mm"}
@@ -59,6 +61,9 @@ const DateInput = ({ label, name, control, type, required, error, ...restProps }
               error: error,
               required: required,
             },
+          }}
+          slots={{
+            openPickerIcon: Calendar,
           }}
         />
       </LocalizationProvider>

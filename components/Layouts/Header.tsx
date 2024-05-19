@@ -485,7 +485,7 @@ const Header = () => {
                                  />
                                  <div className="truncate ltr:pl-4 rtl:pr-4">
                                     <h4 className="text-base">
-                                       {data?.user.first_name + ' ' + data?.user.last_name}
+                                       {data?.user?.first_name + ' ' + data?.user?.last_name}
                                        {/* <span className="rounded bg-success-light px-1 text-xs text-success ltr:ml-2 rtl:ml-2">Pro</span> */}
                                     </h4>
                                     {/* <button
