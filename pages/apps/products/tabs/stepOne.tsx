@@ -46,7 +46,7 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
             name: 'categoryName1',
             type: 'select',
             options: optionData?.categories || [],
-            optionId: 'id',
+            optionKey: 'id',
             optionLabel: 'label',
             onChange: (val) => setFormValues(val),
             display: !editPhase,
@@ -56,12 +56,12 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
             label: 'دسته بندی سطح دو',
             name: 'categoryName',
             type: 'select',
-            options: formValues.value
-               ? optionData?.categories?.find((item) => item.id === formValues.value)?.subCategories
+            options: formValues.categoryName1
+               ? optionData?.categories?.find((item) => item.id === formValues.categoryName1)?.subCategories
                : editPhase
                ? allSubCategories()
                : [],
-            optionId: 'name',
+            optionKey: 'name',
             optionLabel: 'label',
             display: !editPhase,
             required: !editPhase,

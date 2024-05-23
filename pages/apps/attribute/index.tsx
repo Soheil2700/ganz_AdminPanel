@@ -5,7 +5,6 @@ import api from '../../../services/interceptor';
 import { Button, Card, CardContent, CardHeader } from '@mui/material';
 import HoverTable from '../../../components/shared/tables/hoverTable';
 import { notifySuccess } from '../../../components/shared/notify/SNotify';
-import { useCategoriysAttributesQuery } from '../../../services/api/getAttributesQuery';
 
 const Attribute = () => {
    const [category, setCategory] = useState('');
@@ -122,6 +121,29 @@ const Attribute = () => {
    }, [attributes]);
    return (
       <div className="flex flex-col gap-6">
+         <SForm
+            formStructure={[
+               {
+                  label: 'برای مشاهده ویژگی ها، ابتدا یک دسته بندی را انتخاب کنید',
+                  name: 'category_name',
+                  type: 'select',
+                  options: categories?.categories,
+                  optionKey: 'name',
+                  optionLabel: 'label',
+                  onChange: (val) => {
+                     setCategory(val.category_name);
+                     if (val) {
+                        getAtt(val.category_name);
+                     }
+                  },
+                  required: true,
+                  col: 6,
+               },
+            ]}
+            disablePadding={true}
+            showSubmitButton={false}
+            showResetButton={false}
+         />
          <Card>
             <CardHeader
                title="ویژگی ها"
@@ -163,28 +185,10 @@ const Attribute = () => {
                }
             />
             <CardContent>
-               <SForm
-                  formStructure={[
-                     {
-                        label: 'برای مشاهده ویژگی ها، ابتدا یک دسته بندی را انتخاب کنید',
-                        name: 'category_name',
-                        type: 'select',
-                        options: categories?.categories,
-                        optionKey: 'name',
-                        optionLabel: 'label',
-                        required: true,
-                        col: 6,
-                     },
-                  ]}
-                  resetOnSubmit={false}
-                  submitHandler={(val) => {
-                     setCategory(val.category_name);
-                     getAtt(val.category_name);
-                  }}
-                  resetHandler={() => setCategory('')}
-               />
-               {show === 1 && category && <SForm formStructure={fields} submitHandler={handleSubmit} />}
-               {show === 2 && category && <SForm formStructure={attFields} submitHandler={handleSubmit2} resetOnSubmit={false} />}
+               {show === 1 && category && <SForm formStructure={fields} submitHandler={handleSubmit} disablePadding={true} />}
+               {show === 2 && category && (
+                  <SForm formStructure={attFields} submitHandler={handleSubmit2} resetOnSubmit={false} disablePadding={true} />
+               )}
                <HoverTable
                   title="لیست ویژگی ها"
                   headers={[

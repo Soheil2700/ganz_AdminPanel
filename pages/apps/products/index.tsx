@@ -85,6 +85,7 @@ const Products = () => {
                         products.push({ ...res.data, images: response.data.data });
                         return { total: prvs.total + 1, products };
                      });
+                     setActiveStep(2);
                      setOpenModal(false);
                   })
                   .catch((err) => {});
@@ -96,12 +97,9 @@ const Products = () => {
    };
 
    const onSubmit = (values) => {
-      if (activeStep === 2 || editPhase) {
-         sendData(values);
-      } else if (activeStep === 1) {
-         sendData(values);
+      sendData(values);
+      if (activeStep === 1) {
          setProductData((prev) => ({ ...prev, ...values }));
-         setActiveStep(2);
       }
    };
 
@@ -407,8 +405,8 @@ const Products = () => {
             }
          />
          <Modal
-            open={openModal}
-            setOpen={setOpenModal}
+            open={openPackageModal}
+            setOpen={setOpenPackageModal}
             title="تعریف پکیج"
             size="large"
             content={

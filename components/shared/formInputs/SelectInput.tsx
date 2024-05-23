@@ -25,7 +25,7 @@ const SelectInput = ({
    options = [],
    optionKey,
    optionLabel,
-   onChange,
+   onChange = () => {},
    multiple,
    control,
    required = false,
@@ -45,7 +45,10 @@ const SelectInput = ({
          <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            onChange={field.onChange} // send value to hook form
+            onChange={(e) => {
+               field.onChange(e);
+               onChange({ [e.target.name]: e.target.value });
+            }} // send value to hook form
             onBlur={field.onBlur} // notify when input is touched/blur
             value={field.value || []} // input value
             name={field.name} // send down the input name
@@ -76,6 +79,7 @@ const SelectInput = ({
                           sx={{ margin: '0px 5px 0px 0px' }}
                           onClick={(e) => {
                              field.onChange('');
+                             onChange('');
                           }}
                        >
                           <ClearOutlinedIcon />
