@@ -9,7 +9,7 @@ const Orders = () => {
    const [rows, setRows] = useState([]);
    const dispatch = useDispatch();
    useEffect(() => {
-      api.get('/api/order/all-orders').then((res) => setRows(res.data.data));
+      api.get('/api/order/all-orders').then((res) => setRows(res.data.orders));
       dispatch(setPageTitle('سفارشات'));
    }, []);
    return (
