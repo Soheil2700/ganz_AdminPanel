@@ -9,17 +9,18 @@ interface Props {
   label: string;
   required: boolean;
   size: any;
+  disabled: boolean;
   restProps: any;
 }
 
-const SwitchBox = ({ control, name, label, required, error, size, ...restProps }: Props) => {
+const SwitchBox = ({ control, name, label, required, error, size, disabled, ...restProps }: Props) => {
   const { field } = useController({
     name,
     control,
     rules: { required: required },
   });
   return (
-    <FormControl fullWidth size="small" required={required} error={error}>
+    <FormControl fullWidth size="small" required={required} error={error} disabled={disabled}>
       <InputLabel id="demo-simple-select-label">{label}</InputLabel>
       <TextField
         // value={label}

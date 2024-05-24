@@ -18,6 +18,7 @@ import DetailProuduct from '@/components/shared/detailProuduct';
 import DropDownMenu from '../../../components/shared/dropDownMenu/DropDownMenu';
 import IconSquareCheck from '@/components/Icon/IconSquareCheck';
 import SForm from '@/components/shared/formInputs/SForm';
+import moment from 'moment-jalaali';
 
 const Products = () => {
    const [openModal, setOpenModal] = useState(false);
@@ -30,8 +31,9 @@ const Products = () => {
    const [editPhase, setEditPhase] = useState(false);
    const [proId, setProId] = useState(null);
    const [selectedProducts, setSelectedProducts] = useState([]);
-   const [discountCodes, setDiscountCodes] = useState([]);
+   const [openPackageModal, setOpenPackageModal] = useState(false);
    const [openDiscountModal, setOpenDiscountModal] = useState(false);
+   const [packageImage, setPackageImage] = useState({});
    const dispatch = useDispatch();
 
    const sendData = (values: any) => {
@@ -53,12 +55,11 @@ const Products = () => {
                })
                .catch((err) => {});
          }
+         delete values.cover;
          api.patch(`api/product/${editData.id}`, {
-            model: values.model,
-            slug: values.slug,
+            ...values,
             quantity: +values.quantity,
             price: +values.price,
-            description: values.description,
          }).then((res) => {
             mutate();
             setOpenModal(false);
@@ -84,6 +85,7 @@ const Products = () => {
                         products.push({ ...res.data, images: response.data.data });
                         return { total: prvs.total + 1, products };
                      });
+                     setActiveStep(2);
                      setOpenModal(false);
                   })
                   .catch((err) => {});
@@ -95,12 +97,56 @@ const Products = () => {
    };
 
    const onSubmit = (values) => {
-      // if (activeStep === 2 || editPhase) {
       sendData(values);
-      // } else if (activeStep === 1) {
-      setProductData((prev) => ({ ...prev, ...values }));
-      // setActiveStep(2);
-      // }
+      if (activeStep === 1) {
+         setProductData((prev) => ({ ...prev, ...values }));
+      }
+   };
+
+   const packageSubmit = (values) => {
+      if (editPhase) {
+         if (!values.image) {
+            delete values.images;
+         } else {
+            const formData = new FormData();
+            Array.from(packageImage).forEach((i) => formData.append('image', i));
+            api.post(`api/product/${editData.id}/image`, formData)
+               .then((response) => {})
+               .catch((err) => {});
+         }
+         delete values.cover;
+         api.patch(`api/product/${editData.id}`, {
+            ...values,
+            quantity: +values.quantity,
+            price: +values.price,
+         }).then((res) => {
+            mutate();
+            setOpenPackageModal(false);
+            notifySuccess('پکیج با موفقیت ویرایش شد');
+            setActiveStep(1);
+         });
+      } else {
+         api.post('api/product', {
+            ...values,
+            quantity: +values?.quantity,
+            price: +values?.price,
+            // attributes: arr.filter((item) => item.id !== 0),
+            // bulk_cargo: false,
+            // step: 1,
+         }).then((res) => {
+            if (values.images) {
+               const formData = new FormData();
+               Array.from(packageImage).forEach((i) => formData.append('image', i));
+               api.post(`api/product/${res.data.product.id}/image`, formData)
+                  .then((response) => {
+                     setOpenPackageModal(false);
+                  })
+                  .catch((err) => {});
+            }
+            setActiveStep(1);
+            notifySuccess('پکیج با موفقیت ایجاد شد');
+         });
+      }
    };
 
    const steps = editPhase
@@ -167,13 +213,24 @@ const Products = () => {
                   }}
                />
                {selectedProducts.length ? (
-                  <Button
-                     label="تخصیص کد تخفیف"
-                     icon={<IconPlus />}
-                     onClick={() => {
-                        setOpenDiscountModal(true);
-                     }}
-                  />
+                  <>
+                     <Button
+                        label="تخصیص کد تخفیف"
+                        icon={<IconPlus />}
+                        onClick={() => {
+                           setOpenDiscountModal(true);
+                        }}
+                     />
+                     <Button
+                        label="ایجاد پکیج"
+                        icon={<IconPlus />}
+                        onClick={() => {
+                           setEditData({});
+                           setEditPhase(false);
+                           setOpenPackageModal(true);
+                        }}
+                     />
+                  </>
                ) : (
                   <></>
                )}
@@ -298,30 +355,111 @@ const Products = () => {
             open={openDiscountModal}
             setOpen={setOpenDiscountModal}
             title="تخصیص کد تخفیف"
-            size="small"
+            size="medium"
             content={
                <SForm
                   formStructure={[
                      {
-                        label: 'کد تخفیف خود را انتخاب کنید',
-                        name: 'discountId',
-                        type: 'select',
-                        options: discountCodes.filter((item) => item.discountType === 'PRODUCT'),
-                        optionId: 'id',
-                        optionLabel: 'label',
-                        col: 12,
+                        label: 'نام تخفیف',
+                        name: 'label',
+                        type: 'text',
+                        col: 4,
+                        required: true,
+                     },
+                     {
+                        label: 'درصد',
+                        name: 'percent',
+                        type: 'number',
+                        col: 4,
+                        required: true,
+                     },
+                     {
+                        label: 'تاریخ شروع',
+                        name: 'fromDate',
+                        type: 'date',
+                        col: 4,
+                        required: true,
+                     },
+                     {
+                        label: 'تاریخ پایان',
+                        name: 'thruDate',
+                        type: 'date',
+                        col: 4,
                         required: true,
                      },
                   ]}
                   submitHandler={(val) => {
-                     api.put('/admin/api/discount/assign', { discountType: 'PRODUCT', ...val, assignList: selectedProducts }).then(
-                        (res) => {
-                           notifySuccess('تخفیف تخصیص داده شد');
-                           setOpenDiscountModal(false);
-                           setSelectedProducts([]);
-                        }
-                     );
+                     api.post('api/discount', {
+                        ...val,
+                        percent: +val.percent,
+                        fromDate: moment(val.fromDate).format('YYYY-MM-DD'),
+                        thruDate: moment(val.thruDate).format('YYYY-MM-DD'),
+                        product_ids: selectedProducts,
+                     }).then((res) => {
+                        notifySuccess('تخفیف تخصیص داده شد');
+                        setOpenDiscountModal(false);
+                        setSelectedProducts([]);
+                     });
                   }}
+               />
+            }
+         />
+         <Modal
+            open={openPackageModal}
+            setOpen={setOpenPackageModal}
+            title="تعریف پکیج"
+            size="large"
+            content={
+               <SForm
+                  formStructure={[
+                     {
+                        label: 'نام محصول',
+                        name: 'title',
+                        type: 'text',
+                        required: true,
+                     },
+                     {
+                        label: 'slug',
+                        name: 'slug',
+                        type: 'text',
+                        required: true,
+                     },
+                     // {
+                     //    label: 'خلاصه محصول',
+                     //    name: 'summary',
+                     //    type: 'text',
+                     //    required: true,
+                     // },
+                     {
+                        label: 'تعداد موجودی',
+                        name: 'quantity',
+                        type: 'number',
+                     },
+                     {
+                        label: 'قیمت',
+                        name: 'price',
+                        type: 'number',
+                        required: true,
+                     },
+                     {
+                        label: 'تصویر محصول',
+                        name: 'image',
+                        title: 'عکس محصول را بارگذاری نمایید',
+                        type: 'file',
+                        multiple: true,
+                        customOnChange: (value) => {
+                           setPackageImage(value);
+                        },
+                        disabled: editPhase,
+                     },
+                     {
+                        label: 'توضیحات',
+                        name: 'description',
+                        type: 'textarea',
+                        required: true,
+                     },
+                  ]}
+                  submitHandler={packageSubmit}
                />
             }
          />

@@ -1,6 +1,8 @@
 import Tippy from '@tippyjs/react';
 import IconTrashLines from '@/components/Icon/IconTrashLines';
+import IconEdit from '@/components/Icon/IconEdit';
 import 'tippy.js/dist/tippy.css';
+import { Button } from '@mui/material';
 
 interface Props {
    title?: string;
@@ -19,6 +21,8 @@ interface Props {
    }[];
    iconActionsTitle?: string;
    iconActions?: any;
+   editIconOnClick?: any;
+   deleteIconOnClick?: any;
 }
 
 const HoverTable = ({
@@ -68,7 +72,9 @@ const HoverTable = ({
          office: 'Amazon',
       },
    ],
-   iconActions = <IconTrashLines className="m-auto" />,
+   editIconOnClick,
+   deleteIconOnClick,
+   iconActions,
 }: Props) => {
    const moment = require('moment-jalaali');
 
@@ -89,7 +95,7 @@ const HoverTable = ({
                <tbody>
                   {tableData?.map((data: any, index) => {
                      return (
-                        <tr key={data.id} className="group relative">
+                        <tr key={data.id} className="group relative items-center">
                            <td>
                               <div className="whitespace-nowrap">{index + 1}</div>
                            </td>
@@ -114,10 +120,16 @@ const HoverTable = ({
                                  </td>
                               </>
                            ))}
-                           <td className="absolute left-1 top-0 hidden text-center group-hover:flex">
-                              <Tippy content={iconActionsTitle}>
-                                 <button type="button">{iconActions}</button>
-                              </Tippy>
+                           <td className="absolute left-1 top-0 hidden items-center gap-2 !p-0 text-center group-hover:flex">
+                              {/* <Tippy content={iconActionsTitle}> */}
+                              {/* <Button variant="text" onClick={() => editIconOnClick(data)}>
+                                    <IconEdit className="m-auto cursor-pointer" />
+                                 </Button> */}
+                              <Button variant="text" onClick={() => deleteIconOnClick(data)}>
+                                 <IconTrashLines className="m-auto cursor-pointer" />
+                              </Button>
+                              {iconActions}
+                              {/* </Tippy> */}
                            </td>
                         </tr>
                      );

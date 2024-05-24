@@ -6,14 +6,16 @@ import { XClose as ClearOutlinedIcon, ChevronDown as ArrowDropDownOutlinedIcon }
 interface Props {
    control: any;
    name: string;
-   error: any;
-   required: boolean;
+   error?: any;
+   required?: boolean;
    label: string;
    options: any[];
-   optionId: string;
+   optionKey: string;
    optionLabel: string;
    onChange: any;
-   multiple: boolean;
+   size?: any;
+   multiple?: boolean;
+   disabled: boolean;
    restProps: any;
 }
 
@@ -21,13 +23,15 @@ const SelectInput = ({
    name,
    label,
    options = [],
-   optionId,
+   optionKey,
    optionLabel,
    onChange = () => {},
    multiple,
    control,
    required = false,
+   size = 'small',
    error,
+   disabled,
    ...restProps
 }: Props) => {
    const { field } = useController({
@@ -36,14 +40,14 @@ const SelectInput = ({
       rules: { required },
    });
    return (
-      <FormControl fullWidth size="small" required={required} error={error}>
+      <FormControl fullWidth required={required} error={error} size={size}>
          <InputLabel id="demo-simple-select-label">{label}</InputLabel>
          <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
             onChange={(e) => {
                field.onChange(e);
-               onChange(e.target);
+               onChange({ [e.target.name]: e.target.value });
             }} // send value to hook form
             onBlur={field.onBlur} // notify when input is touched/blur
             value={field.value || []} // input value
@@ -51,18 +55,19 @@ const SelectInput = ({
             inputRef={field.ref}
             multiple={multiple}
             input={<OutlinedInput id="select-multiple-chip" label={label} />}
+            disabled={disabled}
             renderValue={
                multiple
                   ? (selected) => (
                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                           {selected.map((value: any) => {
-                             const label = options.find((i: any) => i[optionId] === value)?.[optionLabel];
+                             const label = options.find((i: any) => i[optionKey] === value)?.[optionLabel];
                              return <Chip key={value} label={label} className="!h-[23px]" />;
                           })}
                        </Box>
                     )
                   : (selected) => {
-                       const label = options.find((i: any) => i[optionId] === selected)?.[optionLabel];
+                       const label = options.find((i: any) => i[optionKey] === selected)?.[optionLabel];
                        return <Chip key={selected} label={label} className="!h-[23px]" />;
                     }
             }
@@ -74,6 +79,7 @@ const SelectInput = ({
                           sx={{ margin: '0px 5px 0px 0px' }}
                           onClick={(e) => {
                              field.onChange('');
+                             onChange('');
                           }}
                        >
                           <ClearOutlinedIcon />
@@ -87,7 +93,7 @@ const SelectInput = ({
             }
          >
             {options.map((item) => (
-               <MenuItem value={item[optionId]}>{item[optionLabel]}</MenuItem>
+               <MenuItem value={item[optionKey]}>{item[optionLabel]}</MenuItem>
             ))}
          </Select>
          <FormHelperText>{error?.type === 'required' && 'این فیلد اجباری است!'}</FormHelperText>

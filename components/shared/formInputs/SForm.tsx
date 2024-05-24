@@ -9,11 +9,14 @@ import SwitchBox from './SwitchBox';
 import FileInput from './FileInput';
 import DateInput from './DateInput';
 import PasswordInput from './PasswordInput';
+import SliderInput from './SliderInput';
+import UploadButton from './UploadButton';
 
 interface Props {
    formStructure: {}[];
    editValues?: string | {};
    submitHandler: any;
+   resetHandler?: any;
    buttons?: {}[];
    showSubmitButton?: boolean;
    showResetButton?: boolean;
@@ -22,10 +25,11 @@ interface Props {
    validations?: {};
    submitButtonText?: string;
    resetButtonText?: string;
-   disabelPadding?: boolean;
+   disablePadding?: boolean;
    buttonFullWidth?: boolean;
    submitClassName?: string;
    resetClassName?: string;
+   resetOnSubmit?: boolean;
    endIcon?: JSX.Element;
 }
 
@@ -33,6 +37,7 @@ const SForm = ({
    formStructure = [],
    editValues = '',
    submitHandler = () => {},
+   resetHandler = () => {},
    buttons = [],
    showSubmitButton = true,
    showResetButton = true,
@@ -41,10 +46,11 @@ const SForm = ({
    validations = {},
    submitButtonText,
    resetButtonText,
-   disabelPadding = false,
+   disablePadding = false,
    buttonFullWidth = false,
    resetClassName = '',
    submitClassName = '',
+   resetOnSubmit = true,
    endIcon,
 }: Props) => {
    const {
@@ -70,12 +76,15 @@ const SForm = ({
    }, [editValues]);
    return (
       <form
-         className={`dark:bg-black ${!disabelPadding ? 'p-4' : ''}`}
+         className={!disablePadding ? 'p-4' : ''}
          onSubmit={handleSubmit((value) => {
             for (const propety in value) {
                if (!value[propety]) {
                   delete value[propety];
                }
+            }
+            if (resetOnSubmit) {
+               reset();
             }
             submitHandler(value);
          })}
@@ -163,6 +172,18 @@ const SForm = ({
                            <DateInput key={index} id={index} {...item} control={control} error={errors[item.name]} />
                         </div>
                      );
+                  case 'slider':
+                     return (
+                        <div className={item.col ? colObj[item.col] : 'col-span-3'}>
+                           <SliderInput key={index} id={index} {...item} control={control} error={errors[item.name]} />
+                        </div>
+                     );
+                  case 'uploadButton':
+                     return (
+                        <div className={item.col ? colObj[item.col] : 'col-span-3'}>
+                           <UploadButton key={index} id={index} {...item} control={control} error={errors[item.name]} />
+                        </div>
+                     );
                   case 'component':
                      return <div className="flex flex-col justify-center">{item.component}</div>;
                   default:
@@ -172,12 +193,22 @@ const SForm = ({
          </div>
          <div className={`flex ${buttonFullWidth ? 'flex-col' : 'rtl:flex-row-reverse'} mt-12 gap-3`}>
             {showSubmitButton && (
-               <Button variant="contained" type="submit" className={`!min-w-28 ${submitClassName}`} color="primary" endIcon={endIcon}>
+               <Button variant="contained" type="submit" className={`!px-8 ${submitClassName}`} color="primary" endIcon={endIcon}>
                   {submitButtonText || 'تایید'}
                </Button>
             )}
             {showResetButton && (
-               <Button variant="outlined" type="reset" className={resetClassName} onClick={reset} color="neutral" endIcon={endIcon}>
+               <Button
+                  variant="outlined"
+                  type="reset"
+                  className={resetClassName}
+                  onClick={() => {
+                     reset();
+                     resetHandler();
+                  }}
+                  color="neutral"
+                  endIcon={endIcon}
+               >
                   {resetButtonText || 'لغو'}
                </Button>
             )}
