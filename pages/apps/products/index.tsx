@@ -19,6 +19,7 @@ import DropDownMenu from '../../../components/shared/dropDownMenu/DropDownMenu';
 import IconSquareCheck from '@/components/Icon/IconSquareCheck';
 import SForm from '@/components/shared/formInputs/SForm';
 import moment from 'moment-jalaali';
+import axios from 'axios';
 
 const Products = () => {
    const [openModal, setOpenModal] = useState(false);
@@ -26,7 +27,7 @@ const Products = () => {
    const [activeStep, setActiveStep] = useState(1);
    const [categoryName, setCategoryName] = useState('');
    const { data, isLoading, mutate } = useProductsQuery();
-   const [productData, setProductData] = useState({});
+   const [productId, setProductId] = useState({});
    const [editData, setEditData] = useState({});
    const [editPhase, setEditPhase] = useState(false);
    const [proId, setProId] = useState(null);
@@ -86,20 +87,30 @@ const Products = () => {
                         return { total: prvs.total + 1, products };
                      });
                      setActiveStep(2);
-                     setOpenModal(false);
                   })
                   .catch((err) => {});
             }
-            setActiveStep(1);
+            setProductId(res.data.product.id);
             notifySuccess('محصول با موفقیت ایجاد شد');
          });
       }
    };
 
+   const sendAttribute = (values) => {
+      axios
+         .put('api/attribute/assign-to-product', {
+            values,
+         })
+         .then((res) => {
+            setActiveStep(1);
+            setOpenModal(false);
+         });
+   };
+
    const onSubmit = (values) => {
       sendData(values);
-      if (activeStep === 1) {
-         setProductData((prev) => ({ ...prev, ...values }));
+      if (activeStep === 2) {
+         sendAttribute({ productId, ...values });
       }
    };
 
@@ -189,6 +200,7 @@ const Products = () => {
                     onSubmit={onSubmit}
                     editPhase={editPhase}
                     editData={editData}
+                    productId={productId}
                  />
               ),
            },

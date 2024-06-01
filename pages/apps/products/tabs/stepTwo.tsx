@@ -14,14 +14,15 @@ const StepTwo = ({ categoryName, onSubmit }: Props) => {
       if (categoryOptions && !formStructure.length) {
          let form = [];
          Object.entries(categoryOptions).forEach(([key, value]) => {
+            console.log(value);
             form.push({
-               label: value.attribute?.name,
-               name: value.attribute?.id,
-               type: value.attribute?.attributeType?.toLowerCase(),
-               options: value.attribute?.AttributeValue || [],
-               optionId: 'id',
+               label: value?.name,
+               name: value?.id,
+               type: 'select',
+               options: value?.values || [],
+               optionKey: 'id',
                optionLabel: 'label',
-               required: value.attribute?.required,
+               // required: value?.required,
             });
          });
          setFormStructure(form);
