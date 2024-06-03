@@ -15,21 +15,22 @@ import UploadButton from './UploadButton';
 interface Props {
    formStructure: {}[];
    editValues?: string | {};
-   submitHandler: any;
+   submitHandler?: any;
    resetHandler?: any;
    buttons?: {}[];
+   hideAllButtons?: boolean;
    showSubmitButton?: boolean;
    showResetButton?: boolean;
    formClassName?: string;
    getValues?: any;
    validations?: {};
+   buttonAsCol?: boolean;
    submitButtonText?: string;
    resetButtonText?: string;
-   disablePadding?: boolean;
+   disabelPadding?: boolean;
    buttonFullWidth?: boolean;
    submitClassName?: string;
    resetClassName?: string;
-   resetOnSubmit?: boolean;
    endIcon?: JSX.Element;
 }
 
@@ -39,18 +40,19 @@ const SForm = ({
    submitHandler = () => {},
    resetHandler = () => {},
    buttons = [],
+   hideAllButtons = false,
    showSubmitButton = true,
    showResetButton = true,
    formClassName = '',
    getValues = () => {},
    validations = {},
+   buttonAsCol = false,
    submitButtonText,
    resetButtonText,
-   disablePadding = false,
+   disabelPadding = false,
    buttonFullWidth = false,
    resetClassName = '',
    submitClassName = '',
-   resetOnSubmit = true,
    endIcon,
 }: Props) => {
    const {
@@ -76,17 +78,15 @@ const SForm = ({
    }, [editValues]);
    return (
       <form
-         className={!disablePadding ? 'p-4' : ''}
+         className={!disabelPadding ? 'p-4' : ''}
          onSubmit={handleSubmit((value) => {
             for (const propety in value) {
                if (!value[propety]) {
                   delete value[propety];
                }
             }
-            if (resetOnSubmit) {
-               reset();
-            }
             submitHandler(value);
+            reset();
          })}
          /* @ts-ignore */
          noValidate="noValidate"
@@ -190,47 +190,91 @@ const SForm = ({
                      return <TextField key={index} />;
                }
             })}
+            {buttonAsCol && (
+               <div className={`col-span-3 flex ${buttonFullWidth ? 'flex-col' : 'rtl:flex-row-reverse'} gap-3`}>
+                  {showSubmitButton && (
+                     <Button variant="contained" type="submit" className={`!min-w-28 ${submitClassName}`} color="primary" endIcon={endIcon}>
+                        {submitButtonText || 'تایید'}
+                     </Button>
+                  )}
+                  {showResetButton && (
+                     <Button
+                        variant="outlined"
+                        type="reset"
+                        className={resetClassName}
+                        onClick={() => {
+                           reset();
+                           resetHandler();
+                        }}
+                        color="neutral"
+                        endIcon={endIcon}
+                     >
+                        {resetButtonText || 'لغو'}
+                     </Button>
+                  )}
+                  {buttons.map((item: any, index) => {
+                     return (
+                        <Button
+                           key={index}
+                           {...item}
+                           // ref={ref}
+                           type={item.type || 'button'}
+                           //   onClick={
+                           //     // item.type === "submit"
+                           //     //   ? formik.handleSubmit
+                           //     //   :
+                           //     item.type === "reset" ? formik.handleReset : item.onClick
+                           //   }
+                        >
+                           {item.label}
+                        </Button>
+                     );
+                  })}
+               </div>
+            )}
          </div>
-         <div className={`flex ${buttonFullWidth ? 'flex-col' : 'rtl:flex-row-reverse'} mt-12 gap-3`}>
-            {showSubmitButton && (
-               <Button variant="contained" type="submit" className={`!px-8 ${submitClassName}`} color="primary" endIcon={endIcon}>
-                  {submitButtonText || 'تایید'}
-               </Button>
-            )}
-            {showResetButton && (
-               <Button
-                  variant="outlined"
-                  type="reset"
-                  className={resetClassName}
-                  onClick={() => {
-                     reset();
-                     resetHandler();
-                  }}
-                  color="neutral"
-                  endIcon={endIcon}
-               >
-                  {resetButtonText || 'لغو'}
-               </Button>
-            )}
-            {buttons.map((item: any, index) => {
-               return (
-                  <Button
-                     key={index}
-                     {...item}
-                     // ref={ref}
-                     type={item.type || 'button'}
-                     //   onClick={
-                     //     // item.type === "submit"
-                     //     //   ? formik.handleSubmit
-                     //     //   :
-                     //     item.type === "reset" ? formik.handleReset : item.onClick
-                     //   }
-                  >
-                     {item.label}
+         {!buttonAsCol && !hideAllButtons && (
+            <div className={`flex ${buttonFullWidth ? 'flex-col' : 'rtl:flex-row-reverse'} mt-12 gap-3`}>
+               {showSubmitButton && (
+                  <Button variant="contained" type="submit" className={`!min-w-28 ${submitClassName}`} color="primary" endIcon={endIcon}>
+                     {submitButtonText || 'تایید'}
                   </Button>
-               );
-            })}
-         </div>
+               )}
+               {showResetButton && (
+                  <Button
+                     variant="outlined"
+                     type="reset"
+                     className={resetClassName}
+                     onClick={() => {
+                        reset();
+                        resetHandler();
+                     }}
+                     color="neutral"
+                     endIcon={endIcon}
+                  >
+                     {resetButtonText || 'لغو'}
+                  </Button>
+               )}
+               {buttons.map((item: any, index) => {
+                  return (
+                     <Button
+                        key={index}
+                        {...item}
+                        // ref={ref}
+                        type={item.type || 'button'}
+                        //   onClick={
+                        //     // item.type === "submit"
+                        //     //   ? formik.handleSubmit
+                        //     //   :
+                        //     item.type === "reset" ? formik.handleReset : item.onClick
+                        //   }
+                     >
+                        {item.label}
+                     </Button>
+                  );
+               })}
+            </div>
+         )}
       </form>
    );
 };

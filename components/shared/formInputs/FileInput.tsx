@@ -1,7 +1,7 @@
 import React from "react";
 import { FormControl, InputAdornment, InputLabel, TextField } from "@mui/material";
 import { useController } from "react-hook-form";
-import { UploadCloud01 as CloudUploadOutlinedIcon } from "@untitled-ui/icons-react";
+import { UploadCloud01 as CloudUploadOutlinedIcon, Delete, Trash01 } from "@untitled-ui/icons-react";
 
 interface Props {
   id: string;
@@ -24,7 +24,7 @@ const FileInput = ({ id, label, name, control, error, required, disabled, custom
   return (
     <>
       <FormControl fullWidth size="small" required={required} error={error} disabled={disabled}>
-        <InputLabel id="demo-simple-select-label">{label}</InputLabel>
+        <InputLabel id="demo-simple-select-label">{field.value?.split("\\").pop() || label}</InputLabel>
         <TextField
           // value={label}
           inputProps={{
@@ -32,7 +32,16 @@ const FileInput = ({ id, label, name, control, error, required, disabled, custom
           }}
           fullWidth
           InputProps={{
-            endAdornment: (
+            endAdornment: field.value ? (
+              <InputAdornment position="end" className="cursor-pointer">
+                <Trash01
+                  onClick={() => {
+                    customOnChange("");
+                    field.onChange("");
+                  }}
+                />
+              </InputAdornment>
+            ) : (
               <label htmlFor={id}>
                 <InputAdornment position="end" className="cursor-pointer">
                   <CloudUploadOutlinedIcon />

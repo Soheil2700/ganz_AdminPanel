@@ -92,8 +92,10 @@ const SelectInput = ({
                     )
             }
          >
-            {options.map((item) => (
-               <MenuItem value={item[optionKey]}>{item[optionLabel]}</MenuItem>
+            {options.map((item, index) => (
+               <MenuItem value={item[optionKey]} key={index}>
+                  {item[optionLabel]}
+               </MenuItem>
             ))}
          </Select>
          <FormHelperText>{error?.type === 'required' && 'این فیلد اجباری است!'}</FormHelperText>
