@@ -16,20 +16,11 @@ const StepTwo = ({ categoryName, onSubmit }: Props) => {
          Object.entries(categoryOptions).forEach(([key, value]) => {
             form.push({
                label: value?.name,
-<<<<<<< HEAD
                name: value?.id.toString(),
                type: 'select',
                options: value?.AttributeValue || [],
                optionKey: 'id',
                optionLabel: 'label',
-=======
-               name: value?.id,
-               type: 'select',
-               options: value?.values || [],
-               optionKey: 'id',
-               optionLabel: 'label',
-               // required: value?.required,
->>>>>>> 5a6ac8158bf5df21a1fccda7bde47e1e80aadd12
             });
          });
          setFormStructure(form);
