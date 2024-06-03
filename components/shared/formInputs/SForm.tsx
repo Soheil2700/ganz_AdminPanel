@@ -86,6 +86,7 @@ const SForm = ({
                }
             }
             submitHandler(value);
+            reset();
          })}
          /* @ts-ignore */
          noValidate="noValidate"
