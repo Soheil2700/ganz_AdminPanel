@@ -46,7 +46,7 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
             name: 'categoryName1',
             type: 'select',
             options: optionData?.categories || [],
-            optionKey: 'id',
+            optionKey: 'name',
             optionLabel: 'label',
             onChange: (val) => setFormValues(val),
             display: !editPhase,
@@ -57,7 +57,7 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
             name: 'categoryName',
             type: 'select',
             options: formValues.categoryName1
-               ? optionData?.categories?.find((item) => item.id === formValues.categoryName1)?.subCategories
+               ? optionData?.categories?.find((item) => item.name === formValues.categoryName1)?.subCategories
                : editPhase
                ? allSubCategories()
                : [],
@@ -98,7 +98,16 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
       [formValues, editPhase, optionData]
    );
 
-   return <SForm formStructure={fields} submitHandler={(value) => onSubmit({ ...value, images })} editValues={editData} />;
+   return (
+      <SForm
+         formStructure={fields}
+         submitHandler={(value) => {
+            onSubmit({ ...value, images });
+            setCategoryName(value.categoryName1);
+         }}
+         editValues={editData}
+      />
+   );
 };
 
 export default StepOne;
