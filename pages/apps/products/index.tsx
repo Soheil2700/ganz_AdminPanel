@@ -86,20 +86,27 @@ const Products = () => {
                         return { total: prvs.total + 1, products };
                      });
                      setActiveStep(2);
-                     setOpenModal(false);
                   })
                   .catch((err) => {});
             }
-            setActiveStep(1);
+            setProductData(res.data.product);
             notifySuccess('محصول با موفقیت ایجاد شد');
          });
       }
    };
 
    const onSubmit = (values) => {
-      sendData(values);
       if (activeStep === 1) {
-         setProductData((prev) => ({ ...prev, ...values }));
+         sendData(values);
+      } else {
+         api.put('api/attribute/assign-to-product', {
+            productId: productData.id,
+            attributeValues: values,
+         }).then((res) => {
+            console.log(res.data);
+            setActiveStep(1);
+            setOpenModal(false);
+         });
       }
    };
 
@@ -237,72 +244,74 @@ const Products = () => {
             </div>
             <div className="grid grid-cols-4">
                {!isLoading &&
-                  data?.products.map((item, index) => (
-                     <div className="mb-5 flex items-center justify-center">
-                        <div
-                           group-
-                           key={index}
-                           className="group relative w-full max-w-[19rem] rounded border border-white-light bg-white shadow-[4px_6px_10px_-3px_#bfc9d4] dark:border-[#1b2e4b] dark:bg-[#191e3a] dark:shadow-none"
-                        >
-                           <div className="px-6 py-7">
-                              <div className="-mx-6 -mt-7 mb-7 h-[215px] overflow-hidden rounded-tl rounded-tr">
-                                 <img
-                                    src={process.env.NEXT_PUBLIC_BASE_URL + item?.cover}
-                                    alt="cover"
-                                    className="h-full w-full object-cover p-2"
+                  data?.products
+                     .filter((i) => i.isActive === true)
+                     .map((item, index) => (
+                        <div className="mb-5 flex items-center justify-center">
+                           <div
+                              group-
+                              key={index}
+                              className="group relative w-full max-w-[19rem] rounded border border-white-light bg-white shadow-[4px_6px_10px_-3px_#bfc9d4] dark:border-[#1b2e4b] dark:bg-[#191e3a] dark:shadow-none"
+                           >
+                              <div className="px-6 py-7">
+                                 <div className="-mx-6 -mt-7 mb-7 h-[215px] overflow-hidden rounded-tl rounded-tr">
+                                    <img
+                                       src={process.env.NEXT_PUBLIC_BASE_URL + item?.cover}
+                                       alt="cover"
+                                       className="h-full w-full object-cover p-2"
+                                    />
+                                 </div>
+                                 <h5 className="mb-4 text-xl font-semibold text-[#3b3f5c] dark:text-white-light">{item.title}</h5>
+                                 <div className="flex items-baseline justify-between">
+                                    <p className="text-white-dark">
+                                       <span>موجودی : {item.quantity} عدد</span>
+                                    </p>
+                                    <button
+                                       type="button"
+                                       className="btn btn-primary mt-6"
+                                       onClick={() => {
+                                          setOpenDetailModal(true);
+                                          setProId(item.slug);
+                                       }}
+                                    >
+                                       جزییات
+                                    </button>
+                                 </div>
+                              </div>
+                              <div className="absolute right-1 top-1 hidden cursor-pointer rounded-full p-1 transition-all group-hover:flex">
+                                 <DropDownMenu
+                                    content={
+                                       <>
+                                          <span
+                                             className="hidden cursor-pointer rounded-full bg-primary p-1 transition-all group-hover:flex"
+                                             onClick={() => {
+                                                if (item.slug) {
+                                                   api.get(`api/product/${item.slug}`).then((res) => {
+                                                      setEditData(res.data);
+                                                   });
+                                                }
+                                                setEditPhase(true);
+                                                setOpenModal(true);
+                                             }}
+                                          >
+                                             <IconEdit className="text-white-light" />
+                                          </span>
+                                          <span
+                                             className="hidden cursor-pointer rounded-full bg-primary p-1 transition-all group-hover:flex"
+                                             onClick={() => {
+                                                api.delete(`api/product/${item.id}`).then((res) => {
+                                                   mutate();
+                                                   notifySuccess('محصول با موفقیت حذف شد');
+                                                });
+                                             }}
+                                          >
+                                             <IconTrash className="text-white-light" />
+                                          </span>
+                                       </>
+                                    }
                                  />
                               </div>
-                              <h5 className="mb-4 text-xl font-semibold text-[#3b3f5c] dark:text-white-light">{item.title}</h5>
-                              <div className="flex items-baseline justify-between">
-                                 <p className="text-white-dark">
-                                    <span>موجودی : {item.quantity} عدد</span>
-                                 </p>
-                                 <button
-                                    type="button"
-                                    className="btn btn-primary mt-6"
-                                    onClick={() => {
-                                       setOpenDetailModal(true);
-                                       setProId(item.slug);
-                                    }}
-                                 >
-                                    جزییات
-                                 </button>
-                              </div>
-                           </div>
-                           <div className="absolute right-1 top-1 hidden cursor-pointer rounded-full p-1 transition-all group-hover:flex">
-                              <DropDownMenu
-                                 content={
-                                    <>
-                                       <span
-                                          className="hidden cursor-pointer rounded-full bg-primary p-1 transition-all group-hover:flex"
-                                          onClick={() => {
-                                             if (item.slug) {
-                                                api.get(`api/product/${item.slug}`).then((res) => {
-                                                   setEditData(res.data);
-                                                });
-                                             }
-                                             setEditPhase(true);
-                                             setOpenModal(true);
-                                          }}
-                                       >
-                                          <IconEdit className="text-white-light" />
-                                       </span>
-                                       <span
-                                          className="hidden cursor-pointer rounded-full bg-primary p-1 transition-all group-hover:flex"
-                                          onClick={() => {
-                                             api.delete(`api/product/${item.id}`).then((res) => {
-                                                mutate();
-                                                notifySuccess('محصول با موفقیت حذف شد');
-                                             });
-                                          }}
-                                       >
-                                          <IconTrash className="text-white-light" />
-                                       </span>
-                                    </>
-                                 }
-                              />
-                           </div>
-                           {/* <span
+                              {/* <span
                               className="absolute right-1 top-1 hidden cursor-pointer rounded-full bg-primary p-1 transition-all group-hover:flex"
                               onClick={() => {
                                  if (item.id) {
@@ -316,25 +325,25 @@ const Products = () => {
                            >
                               <IconEdit className="text-white-light" />
                            </span>*/}
-                           <span
-                              className={`absolute left-1 top-1  cursor-pointer rounded-full bg-primary p-1 transition-all group-hover:flex ${
-                                 selectedProducts.find((i) => i === item.id) ? 'flex' : 'hidden'
-                              }`}
-                              onClick={() => {
-                                 if (selectedProducts.find((i) => i === item.id)) {
-                                    setSelectedProducts((prev) => prev.filter((x) => x !== item.id));
-                                 } else {
-                                    setSelectedProducts((prev) => [item.id, ...prev]);
-                                 }
-                              }}
-                           >
-                              <IconSquareCheck
-                                 className={`${selectedProducts.find((i) => i === item.id) ? 'text-green-600' : 'text-white-light'}`}
-                              />
-                           </span>
+                              <span
+                                 className={`absolute left-1 top-1  cursor-pointer rounded-full bg-primary p-1 transition-all group-hover:flex ${
+                                    selectedProducts.find((i) => i === item.id) ? 'flex' : 'hidden'
+                                 }`}
+                                 onClick={() => {
+                                    if (selectedProducts.find((i) => i === item.id)) {
+                                       setSelectedProducts((prev) => prev.filter((x) => x !== item.id));
+                                    } else {
+                                       setSelectedProducts((prev) => [item.id, ...prev]);
+                                    }
+                                 }}
+                              >
+                                 <IconSquareCheck
+                                    className={`${selectedProducts.find((i) => i === item.id) ? 'text-green-600' : 'text-white-light'}`}
+                                 />
+                              </span>
+                           </div>
                         </div>
-                     </div>
-                  ))}
+                     ))}
             </div>
          </div>
          <Modal
