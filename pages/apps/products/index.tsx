@@ -19,6 +19,7 @@ import DropDownMenu from '../../../components/shared/dropDownMenu/DropDownMenu';
 import IconSquareCheck from '@/components/Icon/IconSquareCheck';
 import SForm from '@/components/shared/formInputs/SForm';
 import moment from 'moment-jalaali';
+import axios from 'axios';
 
 const Products = () => {
    const [openModal, setOpenModal] = useState(false);
@@ -26,7 +27,7 @@ const Products = () => {
    const [activeStep, setActiveStep] = useState(1);
    const [categoryName, setCategoryName] = useState('');
    const { data, isLoading, mutate } = useProductsQuery();
-   const [productData, setProductData] = useState({});
+   const [productId, setProductId] = useState({});
    const [editData, setEditData] = useState({});
    const [editPhase, setEditPhase] = useState(false);
    const [proId, setProId] = useState(null);
@@ -89,13 +90,29 @@ const Products = () => {
                   })
                   .catch((err) => {});
             }
+<<<<<<< HEAD
             setProductData(res.data.product);
+=======
+            setProductId(res.data.product.id);
+>>>>>>> 5a6ac8158bf5df21a1fccda7bde47e1e80aadd12
             notifySuccess('محصول با موفقیت ایجاد شد');
          });
       }
    };
 
+   const sendAttribute = (values) => {
+      axios
+         .put('api/attribute/assign-to-product', {
+            values,
+         })
+         .then((res) => {
+            setActiveStep(1);
+            setOpenModal(false);
+         });
+   };
+
    const onSubmit = (values) => {
+<<<<<<< HEAD
       if (activeStep === 1) {
          sendData(values);
       } else {
@@ -107,6 +124,11 @@ const Products = () => {
             setActiveStep(1);
             setOpenModal(false);
          });
+=======
+      sendData(values);
+      if (activeStep === 2) {
+         sendAttribute({ productId, ...values });
+>>>>>>> 5a6ac8158bf5df21a1fccda7bde47e1e80aadd12
       }
    };
 
@@ -196,6 +218,7 @@ const Products = () => {
                     onSubmit={onSubmit}
                     editPhase={editPhase}
                     editData={editData}
+                    productId={productId}
                  />
               ),
            },
