@@ -5,6 +5,7 @@ import { InputAdornment, TextField as MuiTextField } from "@mui/material";
 interface Props {
   control?: any;
   name?: string;
+  label?: string;
   rows?: any;
   error?: any;
   multiline?: boolean;
