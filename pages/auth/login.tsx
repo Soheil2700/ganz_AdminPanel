@@ -153,7 +153,7 @@ const Login = () => {
                            </li>
                         </ul>
                      </div>
-                     <div className="text-center dark:text-white">
+                     {/* <div className="text-center dark:text-white">
                         حساب کاربری ندارید ?&nbsp;
                         <Link
                            href="/auth/boxed-signup"
@@ -161,7 +161,7 @@ const Login = () => {
                         >
                            ورود
                         </Link>
-                     </div>
+                     </div> */}
                   </div>
                </div>
             </div>
