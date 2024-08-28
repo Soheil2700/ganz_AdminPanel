@@ -13,19 +13,21 @@ interface Props {
   label: string;
   control: any;
   name: string;
-  error: any;
-  required: boolean;
-  type: string;
-  restProps: any;
+  error?: any;
+  required?: boolean;
+  type?: "date" | "time" | "date-time";
+  restProps?: any;
 }
 
-const DateInput = ({ label, name, control, type, required, error, ...restProps }: Props) => {
+const DateInput = ({ label, name, control, type = "date", required, error, ...restProps }: Props) => {
   const Picker = type === "date" ? DatePicker : type === "time" ? TimePicker : DateTimePicker;
   const { field } = useController({
     name,
     control,
     rules: { required },
   });
+  console.log(field.value);
+
   return (
     <>
       <LocalizationProvider dateAdapter={AdapterDateFnsJalali}>
@@ -38,7 +40,7 @@ const DateInput = ({ label, name, control, type, required, error, ...restProps }
           ampm={false}
           onChange={field.onChange} // send value to hook form
           onBlur={field.onBlur} // notify when input is touched/blur
-          //   value={field.value || ""} // input value
+          value={field.value} // input value
           name={field.name} // send down the input name
           inputRef={field.ref}
           // onAccept={handle_change}

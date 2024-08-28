@@ -32,10 +32,25 @@ const Products = () => {
    const [editPhase, setEditPhase] = useState(false);
    const [proId, setProId] = useState(null);
    const [selectedProducts, setSelectedProducts] = useState([]);
+   const [selectedProductCategory, setSelectedProductCategory] = useState();
    const [openPackageModal, setOpenPackageModal] = useState(false);
    const [openDiscountModal, setOpenDiscountModal] = useState(false);
+   const [openAttributeModal, setOpenAttributeModal] = useState(false);
    const [packageImage, setPackageImage] = useState({});
+   const [attributes, setAttributes] = useState([]);
    const dispatch = useDispatch();
+
+   const getAtt = (category_name) => {
+      api.get('api/attribute', {
+         params: { category_name },
+      }).then((res) => {
+         let data = res.data.attributes.map((item) => {
+            const label = item.AttributeValue.map((i) => i.label).join('، ');
+            return { ...item, label };
+         });
+         setAttributes(data);
+      });
+   };
 
    const sendData = (values: any) => {
       let arr = [];
@@ -224,7 +239,14 @@ const Products = () => {
         ];
 
    useEffect(() => {
+      if (selectedProductCategory) {
+         getAtt(selectedProductCategory);
+      }
+   }, [selectedProductCategory]);
+
+   useEffect(() => {
       dispatch(setPageTitle('محصولات'));
+      getAtt();
       // api.get('/admin/api/discount').then((res) => setDiscountCodes(res.data.discounts));
    }, []);
 
@@ -241,15 +263,19 @@ const Products = () => {
                      setOpenModal(true);
                   }}
                />
+               {selectedProducts.length === 1 ? (
+                  <Button
+                     label="تخصیص ویژگی"
+                     icon={<IconPlus />}
+                     onClick={() => {
+                        setOpenAttributeModal(true);
+                     }}
+                  />
+               ) : (
+                  <></>
+               )}
                {selectedProducts.length ? (
                   <>
-                     <Button
-                        label="تخصیص کد تخفیف"
-                        icon={<IconPlus />}
-                        onClick={() => {
-                           setOpenDiscountModal(true);
-                        }}
-                     />
                      <Button
                         label="ایجاد پکیج"
                         icon={<IconPlus />}
@@ -257,6 +283,13 @@ const Products = () => {
                            setEditData({});
                            setEditPhase(false);
                            setOpenPackageModal(true);
+                        }}
+                     />
+                     <Button
+                        label="تخصیص کد تخفیف"
+                        icon={<IconPlus />}
+                        onClick={() => {
+                           setOpenDiscountModal(true);
                         }}
                      />
                   </>
@@ -357,6 +390,7 @@ const Products = () => {
                                     } else {
                                        setSelectedProducts((prev) => [item.id, ...prev]);
                                     }
+                                    setSelectedProductCategory(item.categoryName);
                                  }}
                               >
                                  <IconSquareCheck
@@ -491,6 +525,33 @@ const Products = () => {
                      },
                   ]}
                   submitHandler={packageSubmit}
+               />
+            }
+         />
+         <Modal
+            open={openAttributeModal}
+            setOpen={setOpenAttributeModal}
+            title="تخصیص ویژگی"
+            content={
+               <SForm
+                  formStructure={[
+                     {
+                        name: 'attributeId',
+                        label: 'ویژگی',
+                        type: 'multi_select',
+                        options: attributes,
+                        optionKey: 'id',
+                        optionLabel: 'name',
+                        required: true,
+                        col: 12,
+                     },
+                  ]}
+                  submitHandler={(values) => {
+                     api.put('api/attribute/assign-to-product', {
+                        productId: selectedProducts[0],
+                        attributeValues: values.attributeId,
+                     }).then((res) => notifySuccess('ویژگی با موفقیت تخصیص داده شد'));
+                  }}
                />
             }
          />

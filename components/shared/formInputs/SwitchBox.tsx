@@ -5,12 +5,12 @@ import { useController } from "react-hook-form";
 interface Props {
   control: any;
   name: string;
-  error: any;
-  label: string;
-  required: boolean;
-  size: any;
-  disabled: boolean;
-  restProps: any;
+  error?: any;
+  label?: string;
+  required?: boolean;
+  size?: any;
+  disabled?: boolean;
+  restProps?: any;
 }
 
 const SwitchBox = ({ control, name, label, required, error, size, disabled, ...restProps }: Props) => {
