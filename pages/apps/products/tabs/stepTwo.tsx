@@ -14,7 +14,6 @@ const StepTwo = ({ categoryName, onSubmit }: Props) => {
       if (categoryOptions && !formStructure.length) {
          let form = [];
          Object.entries(categoryOptions).forEach(([key, value]) => {
-            console.log(value);
             form.push({
                label: value?.name,
                name: value?.id.toString(),

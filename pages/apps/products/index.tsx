@@ -89,8 +89,11 @@ const Products = () => {
                   })
                   .catch((err) => {});
             }
+<<<<<<< HEAD
             setProductData(res.data.product);
-            setActiveStep(2);
+=======
+            setProductId(res.data.product.id);
+>>>>>>> 5a6ac8158bf5df21a1fccda7bde47e1e80aadd12
             notifySuccess('محصول با موفقیت ایجاد شد');
          });
       }
@@ -108,6 +111,7 @@ const Products = () => {
    };
 
    const onSubmit = (values) => {
+<<<<<<< HEAD
       if (activeStep === 1) {
          sendData(values);
       } else {
@@ -115,9 +119,15 @@ const Products = () => {
             productId: productData.id,
             attributeValues: values,
          }).then((res) => {
+            console.log(res.data);
             setActiveStep(1);
             setOpenModal(false);
          });
+=======
+      sendData(values);
+      if (activeStep === 2) {
+         sendAttribute({ productId, ...values });
+>>>>>>> 5a6ac8158bf5df21a1fccda7bde47e1e80aadd12
       }
    };
 

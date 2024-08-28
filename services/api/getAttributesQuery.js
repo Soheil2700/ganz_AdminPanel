@@ -16,7 +16,7 @@ export function useAttributesQuery() {
 
 function getAttributeOfCategory(categoryId) {
    return api
-      .get(`api/attribute/${categoryId}`)
+      .get(`api/attribute?category_name=${categoryId}`)
       .then((res) => res.data.attributes)
       .catch((err) => []);
 }
