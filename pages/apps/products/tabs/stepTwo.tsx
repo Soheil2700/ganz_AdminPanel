@@ -17,12 +17,11 @@ const StepTwo = ({ categoryName, onSubmit }: Props) => {
             console.log(value);
             form.push({
                label: value?.name,
-               name: value?.id,
+               name: value?.id.toString(),
                type: 'select',
-               options: value?.values || [],
+               options: value?.AttributeValue || [],
                optionKey: 'id',
                optionLabel: 'label',
-               // required: value?.required,
             });
          });
          setFormStructure(form);
@@ -31,7 +30,13 @@ const StepTwo = ({ categoryName, onSubmit }: Props) => {
    return (
       <SForm
          formStructure={formStructure}
-         submitHandler={onSubmit}
+         submitHandler={(value) => {
+            let arr = [];
+            Object.entries(value).forEach(([key, value]) => {
+               arr.push(value);
+            });
+            onSubmit(arr);
+         }}
          // editValues={editValues}
       />
    );
