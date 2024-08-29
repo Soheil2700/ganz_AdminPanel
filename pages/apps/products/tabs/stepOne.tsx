@@ -78,13 +78,43 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
             required: true,
          },
          {
-            label: 'تصویر محصول',
+            label: 'تصویر اصلی محصول',
             name: 'image',
             title: 'عکس محصول را بارگذاری نمایید',
             type: 'file',
-            multiple: true,
             customOnChange: (value) => {
-               setImages(value);
+               setImages((prev) => [...prev, value[0]]);
+            },
+            disabled: editPhase,
+            required: true,
+         },
+         {
+            label: 'سایر تصویر محصول',
+            name: 'image2',
+            title: 'عکس محصول را بارگذاری نمایید',
+            type: 'file',
+            customOnChange: (value) => {
+               setImages((prev) => [...prev, value[0]]);
+            },
+            disabled: editPhase,
+         },
+         {
+            label: 'سایر تصویر محصول',
+            name: 'image3',
+            title: 'عکس محصول را بارگذاری نمایید',
+            type: 'file',
+            customOnChange: (value) => {
+               setImages((prev) => [...prev, value[0]]);
+            },
+            disabled: editPhase,
+         },
+         {
+            label: 'سایر تصویر محصول',
+            name: 'image4',
+            title: 'عکس محصول را بارگذاری نمایید',
+            type: 'file',
+            customOnChange: (value) => {
+               setImages((prev) => [...prev, value[0]]);
             },
             disabled: editPhase,
          },

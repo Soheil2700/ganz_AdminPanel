@@ -104,13 +104,13 @@ const HoverTable = ({
                                  <td>
                                     <div
                                        className={`whitespace-nowrap ${
-                                          i.type === 'status' && data[i.name] === 'completed'
+                                          i.type === 'status' && data[i.name] === 'POSTED'
                                              ? 'text-success'
-                                             : data[i.name] === 'Pending'
+                                             : data[i.name] === 'AWAITING_CONFIRMATION'
                                              ? 'text-secondary'
                                              : data[i.name] === 'UNPAID'
                                              ? 'text-info'
-                                             : data[i.name] === 'Canceled'
+                                             : data[i.name] === 'CANCELED'
                                              ? 'text-danger'
                                              : ''
                                        }`}
