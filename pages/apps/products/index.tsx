@@ -19,6 +19,7 @@ import DropDownMenu from '../../../components/shared/dropDownMenu/DropDownMenu';
 import IconSquareCheck from '@/components/Icon/IconSquareCheck';
 import SForm from '@/components/shared/formInputs/SForm';
 import moment from 'moment-jalaali';
+import axios from 'axios';
 
 const Products = () => {
    const [openModal, setOpenModal] = useState(false);
@@ -26,7 +27,7 @@ const Products = () => {
    const [activeStep, setActiveStep] = useState(1);
    const [categoryName, setCategoryName] = useState('');
    const { data, isLoading, mutate } = useProductsQuery();
-   const [productData, setProductData] = useState({});
+   const [productId, setProductId] = useState({});
    const [editData, setEditData] = useState({});
    const [editPhase, setEditPhase] = useState(false);
    const [proId, setProId] = useState(null);
@@ -103,24 +104,27 @@ const Products = () => {
                   })
                   .catch((err) => {});
             }
-            setProductData(res.data.product);
-            setActiveStep(2);
+            setProductId(res.data.product.id);
             notifySuccess('محصول با موفقیت ایجاد شد');
          });
       }
    };
 
-   const onSubmit = (values) => {
-      if (activeStep === 1) {
-         sendData(values);
-      } else {
-         api.put('api/attribute/assign-to-product', {
-            productId: productData.id,
-            attributeValues: values,
-         }).then((res) => {
+   const sendAttribute = (values) => {
+      axios
+         .put('api/attribute/assign-to-product', {
+            values,
+         })
+         .then((res) => {
             setActiveStep(1);
             setOpenModal(false);
          });
+   };
+
+   const onSubmit = (values) => {
+      sendData(values);
+      if (activeStep === 2) {
+         sendAttribute({ productId, ...values });
       }
    };
 
@@ -210,6 +214,7 @@ const Products = () => {
                     onSubmit={onSubmit}
                     editPhase={editPhase}
                     editData={editData}
+                    productId={productId}
                  />
               ),
            },

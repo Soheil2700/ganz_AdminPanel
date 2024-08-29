@@ -26,7 +26,7 @@ const Stepper = ({ steps = [], activeStep = 1, setActiveStep = () => {}, hideBut
                               type="button"
                               className={`${activeStep === index + 1 ? '!border-primary !bg-primary text-white' : ''}
                                                 flex h-16 w-16 items-center justify-center rounded-full border-[3px] border-[#f3f2ee] bg-white dark:border-[#1b2e4b] dark:bg-[#253b5c]`}
-                              onClick={() => setActiveStep(index + 1)}
+                              // onClick={() => setActiveStep(index + 1)}
                            >
                               {item.icon}
                            </button>
