@@ -19,6 +19,7 @@ import DropDownMenu from '../../../components/shared/dropDownMenu/DropDownMenu';
 import IconSquareCheck from '@/components/Icon/IconSquareCheck';
 import SForm from '@/components/shared/formInputs/SForm';
 import moment from 'moment-jalaali';
+import { notifyError } from '../../../components/shared/notify/SNotify';
 
 const Products = () => {
    const [openModal, setOpenModal] = useState(false);
@@ -26,7 +27,6 @@ const Products = () => {
    const [activeStep, setActiveStep] = useState(1);
    const [categoryName, setCategoryName] = useState('');
    const { data, isLoading, mutate } = useProductsQuery();
-   const [productData, setProductData] = useState({});
    const [editData, setEditData] = useState({});
    const [editPhase, setEditPhase] = useState(false);
    const [proId, setProId] = useState(null);
@@ -38,6 +38,7 @@ const Products = () => {
    const [packageImage, setPackageImage] = useState({});
    const [attributes, setAttributes] = useState([]);
    const dispatch = useDispatch();
+   const [productId, setProductId] = useState({});
 
    const getAtt = (category_name) => {
       api.get('api/attribute', {
@@ -52,6 +53,10 @@ const Products = () => {
    };
 
    const sendData = (values: any) => {
+      if (values.slug.length < 4) {
+         notifyError('اسلاگ نمیتواند کمتر از 4 کاراکتر باشد');
+         return;
+      }
       let arr = [];
       arr = Object.entries(values).map(([key, val]) => ({ id: +val }));
       if (editPhase) {
@@ -89,38 +94,41 @@ const Products = () => {
             // attributes: arr.filter((item) => item.id !== 0),
             bulk_cargo: false,
             step: 1,
-         }).then((res) => {
-            if (values.images) {
-               const formData = new FormData();
-               Array.from(values.images).forEach((i) => formData.append('image', i));
-               api.post(`api/product/${res.data.product.id}/image`, formData)
-                  .then((response) => {
-                     mutate((prvs) => {
-                        const products = [...prvs.products];
-                        products.push({ ...res.data, images: response.data.data });
-                        return { total: prvs.total + 1, products };
-                     });
-                  })
-                  .catch((err) => {});
-            }
-            setProductData(res.data.product);
-            setActiveStep(2);
-            notifySuccess('محصول با موفقیت ایجاد شد');
-         });
+         })
+            .then((res) => {
+               if (values.images) {
+                  const formData = new FormData();
+                  Array.from(values.images).forEach((i) => formData.append('image', i));
+                  api.post(`api/product/${res.data.product.id}/image`, formData)
+                     .then((response) => {
+                        mutate((prvs) => {
+                           const products = [...prvs.products];
+                           products.push({ ...res.data, images: response.data.data });
+                           return { total: prvs.total + 1, products };
+                        });
+                     })
+                     .catch((err) => {});
+               }
+               setProductId(res.data.product.id);
+               notifySuccess('محصول با موفقیت ایجاد شد');
+            })
+            .catch((res) => notifyError('خطایی رخ داده است'));
       }
    };
 
+   const sendAttribute = (values) => {
+      api.put('api/attribute/assign-to-product', {
+         values,
+      }).then((res) => {
+         setActiveStep(1);
+         setOpenModal(false);
+      });
+   };
+
    const onSubmit = (values) => {
-      if (activeStep === 1) {
-         sendData(values);
-      } else {
-         api.put('api/attribute/assign-to-product', {
-            productId: productData.id,
-            attributeValues: values,
-         }).then((res) => {
-            setActiveStep(1);
-            setOpenModal(false);
-         });
+      sendData(values);
+      if (activeStep === 2) {
+         sendAttribute({ productId, ...values });
       }
    };
 
@@ -253,7 +261,7 @@ const Products = () => {
                )}
                {selectedProducts.length ? (
                   <>
-                     <Button
+                     {/* <Button
                         label="ایجاد پکیج"
                         icon={<IconPlus />}
                         onClick={() => {
@@ -261,7 +269,7 @@ const Products = () => {
                            setEditPhase(false);
                            setOpenPackageModal(true);
                         }}
-                     />
+                     /> */}
                      <Button
                         label="تخصیص کد تخفیف"
                         icon={<IconPlus />}
@@ -310,6 +318,11 @@ const Products = () => {
                                     </button>
                                  </div>
                               </div>
+                              {item.bulk_cargo && (
+                                 <span className="absolute left-1/2 top-0 -translate-x-1/2 rounded-b-lg bg-primary px-2 py-1 text-sm text-primary-light">
+                                    ترکیب دلخواه
+                                 </span>
+                              )}
                               <div className="absolute right-1 top-1 hidden cursor-pointer rounded-full p-1 transition-all group-hover:flex">
                                  <DropDownMenu
                                     content={

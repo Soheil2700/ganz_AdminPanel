@@ -24,12 +24,17 @@ import IconPlus from '@/components/Icon/IconPlus';
 import IconCaretDown from '@/components/Icon/IconCaretDown';
 import IconMultipleForwardRight from '@/components/Icon/IconMultipleForwardRight';
 import { useTranslation } from 'react-i18next';
+import { useRouter } from 'next/router';
 
 const Index = () => {
+   const router = useRouter();
    const dispatch = useDispatch();
    useEffect(() => {
-      dispatch(setPageTitle('Sales Admin'));
-   });
+      dispatch(setPageTitle('پنل ادمین'));
+   }, []);
+   useEffect(() => {
+      router.push('/apps/products');
+   }, []);
    const isDark = useSelector((state: IRootState) => state.themeConfig.theme === 'dark' || state.themeConfig.isDarkMode);
    const isRtl = useSelector((state: IRootState) => state.themeConfig.rtlClass) === 'rtl' ? true : false;
 
@@ -411,7 +416,7 @@ const Index = () => {
 
    return (
       <>
-         <div>
+         {/* <div>
             <ul className="flex space-x-2 rtl:space-x-reverse">
                <li>
                   <Link href="/" className="text-primary hover:underline">
@@ -492,10 +497,10 @@ const Index = () => {
                         </div>
                      </div>
                   </div>
-               </div>
+               </div> */}
 
-               {/* <div className="mb-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3"> */}
-               {/* <div className="panel h-full sm:col-span-2 xl:col-span-1">
+         {/* <div className="mb-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3"> */}
+         {/* <div className="panel h-full sm:col-span-2 xl:col-span-1">
                      <div className="mb-5 flex items-center">
                         <h5 className="text-lg font-semibold dark:text-white-light">
                            فروش روزانه
@@ -525,7 +530,7 @@ const Index = () => {
                         </div>
                      </div>
                   </div> */}
-               {/* <div className="panel h-full">
+         {/* <div className="panel h-full">
                      <div className="mb-5 flex items-center justify-between dark:text-white-light">
                         <h5 className="text-lg font-semibold">خلاصه</h5>
                         <div className="dropdown">
@@ -605,8 +610,8 @@ const Index = () => {
                      </div>
                   </div> */}
 
-               {/* <div className="panel h-full p-0"> */}
-               {/* <div className="absolute flex w-full items-center justify-between p-5">
+         {/* <div className="panel h-full p-0"> */}
+         {/* <div className="absolute flex w-full items-center justify-between p-5">
                         <div className="relative">
                            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-success-light text-success dark:bg-success dark:text-success-light">
                               <IconShoppingCart />
@@ -617,8 +622,8 @@ const Index = () => {
                            <span className="block text-sm font-normal">کل سفارشات</span>
                         </h5>
                      </div> */}
-               {/* <div className="rounded-lg bg-transparent"> */}
-               {/* {isMounted ? (
+         {/* <div className="rounded-lg bg-transparent"> */}
+         {/* {isMounted ? (
                            <ReactApexChart
                               series={totalOrders.series}
                               options={totalOrders.options}
@@ -631,10 +636,10 @@ const Index = () => {
                               <span className="inline-flex h-5 w-5 animate-spin rounded-full  border-2 border-black !border-l-transparent dark:border-white"></span>
                            </div>
                         )} */}
-               {/* </div>
+         {/* </div>
                   </div> */}
-               {/* </div> */}
-               {/* <div className="mb-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+         {/* </div> */}
+         {/* <div className="mb-6 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
                         <div className="panel h-full pb-0 sm:col-span-2 xl:col-span-1">
                             <h5 className="mb-5 text-lg font-semibold dark:text-white-light">فعالیت های اخیر</h5>
                             <PerfectScrollbar className="relative mb-4 h-[290px] ltr:-mr-3 ltr:pr-3 rtl:-ml-3 rtl:pl-3" options={{ suppressScrollX: true }}>
@@ -923,7 +928,7 @@ const Index = () => {
                         </div>
                     </div> */}
 
-               <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+         {/* <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                   <div className="panel h-full w-full">
                      <div className="mb-5 flex items-center justify-between">
                         <h5 className="text-lg font-semibold dark:text-white-light">سفارشات اخیر</h5>
@@ -1183,7 +1188,7 @@ const Index = () => {
                   </div>
                </div>
             </div>
-         </div>
+         </div> */}
       </>
    );
 };

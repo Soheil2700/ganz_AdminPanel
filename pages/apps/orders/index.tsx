@@ -9,7 +9,7 @@ const Orders = () => {
    const [rows, setRows] = useState([]);
    const dispatch = useDispatch();
    useEffect(() => {
-      api.get('/api/order/all-orders').then((res) => setRows(res.data.orders));
+      api.get('/api/order/all-orders').then((res) => setRows(res.data.orders.orders));
       dispatch(setPageTitle('سفارشات'));
    }, []);
    return (
@@ -23,7 +23,15 @@ const Orders = () => {
                   { name: 'price', label: 'مبلغ سفارش', type: 'text' },
                   { name: 'status', label: 'وضعیت', type: 'status' },
                ]}
-               tableData={rows}
+               tableData={rows.map((item) => {
+                  let price = 0;
+                  item.OrderItem.forEach((i) => (price = price + i.unit_cost));
+                  return {
+                     ...item,
+                     receiver_name: item?.User.first_name + ' ' + item?.User.last_name,
+                     price: `${price.toLocaleString()} تومان`,
+                  };
+               })}
             />
          </div>
       </PermissionChecker>

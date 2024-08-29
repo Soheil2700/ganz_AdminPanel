@@ -15,6 +15,7 @@ import { useSWRConfig } from 'swr';
 const Login = () => {
    const [formValues, setFormValues] = useState({ mobile: '', otp: '', mode: 'check' });
    const [show, setShow] = useState(false);
+   const [loginType, setLoginType] = useState('OTP');
    const dispatch = useDispatch();
    const { mutate, cache } = useSWRConfig();
    const router = useRouter();
@@ -24,7 +25,7 @@ const Login = () => {
          e.preventDefault();
          // router.push('/');
          const { mode } = formValues;
-         if (mode === 'check') {
+         if (loginType === 'OTP' && mode === 'check') {
             api.post('api/auth/check', { mobile: formValues.mobile.replace('0', '+98') })
                .then((res) => {
                   if (!res.data?.registered) notifyWarning('ابتدا از طریق وبسایت حساب کاربری ایجاد کنید');
@@ -96,7 +97,7 @@ const Login = () => {
                               </span>
                            </div>
                         </div>
-                        {show && (
+                        {loginType === 'OTP' && show && (
                            <div>
                               <label htmlFor="Code">کد ارسالی</label>
                               <div className="relative text-white-dark">
@@ -105,6 +106,24 @@ const Login = () => {
                                     name="code"
                                     type="password"
                                     placeholder="کد ارسالی را وارد کنید"
+                                    className="form-input ps-10 placeholder:text-white-dark"
+                                    onChange={handleChange}
+                                 />
+                                 <span className="absolute start-4 top-1/2 -translate-y-1/2">
+                                    <IconLockDots fill={true} />
+                                 </span>
+                              </div>
+                           </div>
+                        )}
+                        {loginType !== 'OTP' && (
+                           <div>
+                              <label htmlFor="Password">رمز عبور</label>
+                              <div className="relative text-white-dark">
+                                 <input
+                                    id="Password"
+                                    name="password"
+                                    type="password"
+                                    placeholder="رمز عبور خود را وارد کنید"
                                     className="form-input ps-10 placeholder:text-white-dark"
                                     onChange={handleChange}
                                  />
@@ -123,44 +142,21 @@ const Login = () => {
                      </form>
                      <div className="relative my-7 text-center md:mb-9">
                         <span className="absolute inset-x-0 top-1/2 h-px w-full -translate-y-1/2 bg-white-light dark:bg-white-dark"></span>
-                        <span className="relative bg-white px-2 font-bold uppercase text-white-dark dark:bg-dark dark:text-white-light">
-                           یا
-                        </span>
-                     </div>
-                     <div className="mb-10 md:mb-[60px]">
-                        <ul className="flex justify-center gap-3.5 text-white">
-                           <li>
-                              <Link
-                                 href="#"
-                                 className="inline-flex h-8 w-8 items-center justify-center rounded-full p-0 transition hover:scale-110"
-                                 style={{
-                                    background: 'linear-gradient(135deg, rgba(239, 18, 98, 1) 0%, rgba(67, 97, 238, 1) 100%)',
-                                 }}
-                              >
-                                 <IconInstagram />
-                              </Link>
-                           </li>
-                           <li>
-                              <Link
-                                 href="#"
-                                 className="inline-flex h-8 w-8 items-center justify-center rounded-full p-0 transition hover:scale-110"
-                                 style={{
-                                    background: 'linear-gradient(135deg, rgba(239, 18, 98, 1) 0%, rgba(67, 97, 238, 1) 100%)',
-                                 }}
-                              >
-                                 <IconGoogle />
-                              </Link>
-                           </li>
-                        </ul>
-                     </div>
-                     <div className="text-center dark:text-white">
-                        حساب کاربری ندارید ?&nbsp;
-                        <Link
-                           href="/auth/boxed-signup"
-                           className="uppercase text-primary underline transition hover:text-black dark:hover:text-white"
-                        >
-                           ورود
-                        </Link>
+                        {loginType === 'OTP' ? (
+                           <span
+                              className="relative cursor-pointer bg-white px-2 font-bold uppercase text-white-dark dark:bg-dark dark:text-white-light"
+                              onClick={() => setLoginType('PASSWORD')}
+                           >
+                              ورود با رمز عبور
+                           </span>
+                        ) : (
+                           <span
+                              className="relative cursor-pointer bg-white px-2 font-bold uppercase text-white-dark dark:bg-dark dark:text-white-light"
+                              onClick={() => setLoginType('OTP')}
+                           >
+                              ورود با کد یکبار مصرف
+                           </span>
+                        )}
                      </div>
                   </div>
                </div>
