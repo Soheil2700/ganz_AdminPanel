@@ -119,6 +119,11 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
             disabled: editPhase,
          },
          {
+            label: 'ترکیب دلخواه',
+            name: 'bulk_cargo',
+            type: 'switch',
+         },
+         {
             label: 'توضیحات',
             name: 'description',
             type: 'textarea',

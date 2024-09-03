@@ -1,8 +1,11 @@
-import Tippy from '@tippyjs/react';
 import IconTrashLines from '@/components/Icon/IconTrashLines';
-import IconEdit from '@/components/Icon/IconEdit';
 import 'tippy.js/dist/tippy.css';
-import { Button } from '@mui/material';
+import { Button, IconButton } from '@mui/material';
+import { Eye, FilterFunnel01 } from '@untitled-ui/icons-react';
+import { useState } from 'react';
+import Modal from '@/components/shared/modal';
+import SForm from '../formInputs/SForm';
+import { OrderStatus } from '../../../enums/status';
 
 interface Props {
    title?: string;
@@ -23,6 +26,7 @@ interface Props {
    iconActions?: any;
    editIconOnClick?: any;
    deleteIconOnClick?: any;
+   getSearchValue?: any;
 }
 
 const HoverTable = ({
@@ -72,72 +76,139 @@ const HoverTable = ({
          office: 'Amazon',
       },
    ],
+   showFilter = false,
+   showEdit = false,
    editIconOnClick,
    deleteIconOnClick,
    iconActions,
+   getSearchValue,
 }: Props) => {
    const moment = require('moment-jalaali');
-
+   const [searchValue, setSearchValue] = useState();
+   const [openFilterModal, setOpenFilterModal] = useState(false);
    return (
-      <div className="panel">
-         <div className="mb-5 flex items-center justify-between">
-            <h5 className="text-lg font-semibold dark:text-white-light">{title}</h5>
+      <>
+         <div className="panel">
+            <div className="mb-5 flex items-center justify-between">
+               <h5 className="text-lg font-semibold dark:text-white-light">{title}</h5>
+               {showFilter && (
+                  <IconButton onClick={() => setOpenFilterModal(true)}>
+                     <FilterFunnel01 />
+                  </IconButton>
+               )}
+            </div>
+            <div className="table-responsive mb-5">
+               <table className="table-hover overflow-hidden">
+                  <thead>
+                     <tr>
+                        {[{ label: 'ردیف' }, ...headers]?.map((i: any, index) => (
+                           <th className={index === 0 ? 'rounded-r-md' : index === headers.length ? 'rounded-l-md' : ''}>{i.label}</th>
+                        ))}
+                     </tr>
+                  </thead>
+                  <tbody>
+                     {tableData?.map((data: any, index) => {
+                        return (
+                           <tr key={data.id} className="group relative items-center">
+                              <td>
+                                 <div className="whitespace-nowrap">{index + 1}</div>
+                              </td>
+                              {headers.map((i: any) => (
+                                 <>
+                                    <td>
+                                       <div
+                                          className={`whitespace-nowrap ${
+                                             i.type === 'status' && data[i.name] === 'POSTED'
+                                                ? 'text-success'
+                                                : data[i.name] === 'AWAITING_CONFIRMATION'
+                                                ? 'text-secondary'
+                                                : data[i.name] === 'UNPAID'
+                                                ? 'text-info'
+                                                : data[i.name] === 'CANCELED'
+                                                ? 'text-danger'
+                                                : ''
+                                          }`}
+                                       >
+                                          {i.type === 'date' ? moment(data[i.name]).format('jYYYY/jM/jD') : data[i.name]}
+                                       </div>
+                                    </td>
+                                 </>
+                              ))}
+                              <td className="absolute left-1 top-0 hidden items-center gap-2 !p-0 text-center group-hover:flex">
+                                 {/* <Tippy content={iconActionsTitle}> */}
+                                 {showEdit && (
+                                    <Button variant="text" onClick={() => editIconOnClick(data)}>
+                                       <Eye className="m-auto cursor-pointer" />
+                                    </Button>
+                                 )}
+                                 <Button variant="text" onClick={() => deleteIconOnClick(data)}>
+                                    <IconTrashLines className="m-auto cursor-pointer" />
+                                 </Button>
+                                 {iconActions}
+                                 {/* </Tippy> */}
+                              </td>
+                           </tr>
+                        );
+                     })}
+                  </tbody>
+               </table>
+            </div>
          </div>
-         <div className="table-responsive mb-5">
-            <table className="table-hover overflow-hidden">
-               <thead>
-                  <tr>
-                     {[{ label: 'ردیف' }, ...headers]?.map((i: any, index) => (
-                        <th className={index === 0 ? 'rounded-r-md' : index === headers.length ? 'rounded-l-md' : ''}>{i.label}</th>
-                     ))}
-                  </tr>
-               </thead>
-               <tbody>
-                  {tableData?.map((data: any, index) => {
-                     return (
-                        <tr key={data.id} className="group relative items-center">
-                           <td>
-                              <div className="whitespace-nowrap">{index + 1}</div>
-                           </td>
-                           {headers.map((i: any) => (
-                              <>
-                                 <td>
-                                    <div
-                                       className={`whitespace-nowrap ${
-                                          i.type === 'status' && data[i.name] === 'POSTED'
-                                             ? 'text-success'
-                                             : data[i.name] === 'AWAITING_CONFIRMATION'
-                                             ? 'text-secondary'
-                                             : data[i.name] === 'UNPAID'
-                                             ? 'text-info'
-                                             : data[i.name] === 'CANCELED'
-                                             ? 'text-danger'
-                                             : ''
-                                       }`}
-                                    >
-                                       {i.type === 'date' ? moment(data[i.name]).format('jYYYY/jM/jD') : data[i.name]}
-                                    </div>
-                                 </td>
-                              </>
-                           ))}
-                           <td className="absolute left-1 top-0 hidden items-center gap-2 !p-0 text-center group-hover:flex">
-                              {/* <Tippy content={iconActionsTitle}> */}
-                              {/* <Button variant="text" onClick={() => editIconOnClick(data)}>
-                                    <IconEdit className="m-auto cursor-pointer" />
-                                 </Button> */}
-                              <Button variant="text" onClick={() => deleteIconOnClick(data)}>
-                                 <IconTrashLines className="m-auto cursor-pointer" />
-                              </Button>
-                              {iconActions}
-                              {/* </Tippy> */}
-                           </td>
-                        </tr>
-                     );
-                  })}
-               </tbody>
-            </table>
-         </div>
-      </div>
+         <Modal
+            open={openFilterModal}
+            setOpen={setOpenFilterModal}
+            title="فیلتر سفارشات"
+            size="medium"
+            content={
+               <SForm
+                  formStructure={[
+                     {
+                        name: 'trackingCode',
+                        label: 'کد پیگیری',
+                        type: 'text',
+                        col: 6,
+                     },
+                     {
+                        name: 'status',
+                        label: 'وضعیت',
+                        type: 'select',
+                        options: Object.entries(OrderStatus).map(([key, value]) => ({ id: key, label: value })),
+                        optionKey: 'id',
+                        optionLabel: 'label',
+                        col: 6,
+                     },
+                     {
+                        name: 'fromDate',
+                        label: 'از تاریخ',
+                        type: 'date',
+                        col: 6,
+                     },
+                     {
+                        name: 'thruDate',
+                        label: 'تا تاریخ',
+                        type: 'date',
+                        col: 6,
+                     },
+                  ]}
+                  // submitHandler={(values) => {
+                  //    api.put('api/attribute/assign-to-product', {
+                  //       productId: selectedProducts[0],
+                  //       attributeValues: values.attributeId,
+                  //    }).then((res) => notifySuccess('ویژگی با موفقیت تخصیص داده شد'));
+                  // }}
+                  disabelPadding={true}
+                  submitHandler={(value) => {
+                     getSearchValue(value);
+                     setOpenFilterModal(false);
+                  }}
+                  resetHandler={() => {
+                     getSearchValue({});
+                     setOpenFilterModal(false);
+                  }}
+               />
+            }
+         />
+      </>
    );
 };
 

@@ -16,7 +16,7 @@ const DetailProuduct = ({ proId }: Props) => {
    const [open, setOpen] = useState(false);
    const [activeSlide, setActiveSlide] = useState(0);
    const [allData, setAllData] = useState([]);
-
+   const moment = require('moment-jalaali');
    useEffect(() => {
       api.get('api/product/' + proId).then((res) => {
          setAllData(res.data);
@@ -99,14 +99,29 @@ const DetailProuduct = ({ proId }: Props) => {
                <ul className={`m-0 h-auto list-inside list-disc overflow-hidden p-0 transition-all duration-300`}>
                   <li className="mb-3 list-none text-base text-black dark:text-white">ویژگی های محصول</li>
                   <li className="mb-1 text-sm">
+                     <span>دسته بندی: {allData?.Category?.label}</span>
+                  </li>
+                  <li className="mb-1 text-sm">
                      <span>{allData.title} :</span>
                      <span> {allData.description}</span>
                   </li>
+                  <li className="mb-1 text-sm">
+                     <span>تعداد : </span>
+                     <span>{allData.quantity}</span>
+                  </li>
+                  <li className="mb-1 text-sm">
+                     <span>قیمت: {allData?.price.toLocaleString()} تومان</span>
+                  </li>
+                  <li className="mb-1 text-sm">
+                     <span>قیمت با تخفیف: {allData?.discounted_price.toLocaleString()} تومان</span>
+                  </li>
+                  <li className="mb-1 text-sm">
+                     <span>تاریخ ایجاد محصول: {moment(allData?.createdAt).format('jYYYY/jM/jD')}</span>
+                  </li>
+                  <li className="mb-1 text-sm">
+                     <span>توضیحات: {allData?.description} تومان</span>
+                  </li>
                </ul>
-               <div className="flex gap-2">
-                  <span>تعداد : </span>
-                  <span>{allData.quantity}</span>
-               </div>
             </div>
          </div>
       </div>

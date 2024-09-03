@@ -37,8 +37,10 @@ const Products = () => {
    const [openAttributeModal, setOpenAttributeModal] = useState(false);
    const [packageImage, setPackageImage] = useState({});
    const [attributes, setAttributes] = useState([]);
+   const [attValue, setAttValue] = useState([]);
    const dispatch = useDispatch();
    const [productId, setProductId] = useState({});
+   const [selectedAtt, setSelectedAtt] = useState();
 
    const getAtt = (category_name) => {
       api.get('api/attribute', {
@@ -48,6 +50,7 @@ const Products = () => {
             const label = item.AttributeValue.map((i) => i.label).join('، ');
             return { ...item, label };
          });
+         setAttValue(res.data.attributes);
          setAttributes(data);
       });
    };
@@ -92,7 +95,7 @@ const Products = () => {
             quantity: +values?.quantity,
             price: +values?.price,
             // attributes: arr.filter((item) => item.id !== 0),
-            bulk_cargo: false,
+            bulk_cargo: values?.bulk_cargo ? values.bulk_cargo : false,
             step: 1,
          })
             .then((res) => {
@@ -522,26 +525,45 @@ const Products = () => {
             open={openAttributeModal}
             setOpen={setOpenAttributeModal}
             title="تخصیص ویژگی"
+            size="medium"
             content={
                <SForm
                   formStructure={[
                      {
                         name: 'attributeId',
                         label: 'ویژگی',
-                        type: 'multi_select',
+                        type: 'select',
                         options: attributes,
                         optionKey: 'id',
                         optionLabel: 'name',
+                        onChange: (val) => {
+                           setSelectedAtt(val.attributeId);
+                        },
                         required: true,
-                        col: 12,
+                        col: 6,
+                     },
+                     {
+                        name: 'attributeValues',
+                        label: 'مقدار',
+                        type: 'multi_select',
+                        options: attValue.find((item) => item.id === selectedAtt)?.AttributeValue || [],
+                        optionKey: 'id',
+                        optionLabel: 'label',
+                        required: true,
+                        col: 6,
                      },
                   ]}
                   submitHandler={(values) => {
                      api.put('api/attribute/assign-to-product', {
                         productId: selectedProducts[0],
-                        attributeValues: values.attributeId,
-                     }).then((res) => notifySuccess('ویژگی با موفقیت تخصیص داده شد'));
+                        attributeValues: values.attributeValues,
+                     }).then((res) => {
+                        setSelectedProducts([]);
+                        setOpenAttributeModal(false);
+                        notifySuccess('ویژگی با موفقیت تخصیص داده شد');
+                     });
                   }}
+                  disabelPadding={true}
                />
             }
          />
