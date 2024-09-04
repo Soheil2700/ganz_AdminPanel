@@ -4,19 +4,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toggleSidebar } from '@/store/themeConfigSlice';
 import { useTranslation } from 'react-i18next';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import IconMenuDocumentation from '../Icon/Menu/IconMenuDocumentation';
 import IconMinus from '../Icon/IconMinus';
 import Link from 'next/link';
-import IconMenuDashboard from '../Icon/Menu/IconMenuDashboard';
 import IconCaretsDown from '../Icon/IconCaretsDown';
-import IconTicket from '@/components/Icon/IconChatDot';
 import IconProduct from '@/components/Icon/IconBox';
 import IconCategory from '@/components/Icon/IconArchive';
-import IconTag from '../Icon/IconTag';
 import IconBarChart from '../Icon/IconBarChart';
 import IconAttribute from '@/components/Icon/IconListCheck';
 import IconShoppingBag from '../Icon/IconShoppingBag';
-import IconHome from '../Icon/IconHome';
 import { IRootState } from '@/store';
 
 const CustomSidebar = () => {
@@ -70,9 +65,9 @@ const CustomSidebar = () => {
             <div className="h-full bg-white dark:bg-black">
                <div className="flex items-center justify-between px-4 py-3">
                   <Link href="/" className="main-logo flex shrink-0 items-center">
-                     <img className="ml-[5px] w-8 flex-none" src="/assets/images/logo.svg" alt="logo" />
-                     <span className="align-middle text-2xl font-semibold ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light lg:inline">
-                        {t('VRISTO')}
+                     <img className="ml-[5px] w-8 flex-none rounded-lg bg-slate-800 p-1" src="/assets/images/logo-mini.png" alt="logo" />
+                     <span className="align-middle text-xl font-semibold ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light lg:inline">
+                        {t('Ganz Coffee')}
                      </span>
                   </Link>
 
@@ -85,7 +80,7 @@ const CustomSidebar = () => {
                   </button>
                </div>
                <PerfectScrollbar className="relative h-[calc(100vh-80px)]">
-                  <ul className="relative mt-6 flex flex-col justify-center gap-2 space-y-0.5 p-4 py-0 font-semibold">
+                  <ul className="relative mt-6 flex flex-col justify-center gap-2 space-y-0.5 p-3 py-0 font-semibold">
                      {/* <li className="menu nav-item">
                         <Link href="/" className="nav-link group">
                            <div className="flex items-center">
@@ -107,7 +102,18 @@ const CustomSidebar = () => {
                            <div className="flex items-center">
                               <IconProduct className="shrink-0 group-hover:!text-primary" />
                               <span className="text-black ltr:pl-3 rtl:pr-3 dark:text-white-light dark:group-hover:text-white-dark">
-                                 تعریف و ویرایش محصول
+                                 تعریف و ویرایش محصول آماده
+                              </span>
+                           </div>
+                        </Link>
+                     </li>
+
+                     <li className="menu nav-item">
+                        <Link href="/apps/personalBlend" className="nav-link group">
+                           <div className="flex items-center">
+                              <IconProduct className="shrink-0 group-hover:!text-primary" />
+                              <span className="text-black ltr:pl-3 rtl:pr-3 dark:text-white-light dark:group-hover:text-white-dark">
+                                 تعریف و ویرایش محصول سفارشی
                               </span>
                            </div>
                         </Link>
@@ -174,7 +180,7 @@ const CustomSidebar = () => {
                      </li> */}
 
                      {/* <h2 className="-mx-4 mb-1 flex items-center bg-white-light/30 px-7 py-3 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
-                        <IconMinus className="hidden h-5 w-4 flex-none" />
+                        <IconMinus className="flex-none hidden w-4 h-5" />
                         <span>{t('supports')}</span>
                      </h2>
 

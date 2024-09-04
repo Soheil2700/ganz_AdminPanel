@@ -97,7 +97,7 @@ const SForm = ({
                   case 'text':
                   case 'number':
                      return (
-                        <div key={index} className={item.col ? colObj[item.col] : 'col-span-3'}>
+                        <div key={index} className={`${!item.hidden ? 'block' : 'hidden'} ${item.col ? colObj[item.col] : 'col-span-3'}`}>
                            <TextField
                               id={index}
                               {...item}
@@ -110,7 +110,7 @@ const SForm = ({
                      );
                   case 'password':
                      return (
-                        <div key={index} className={item.col ? colObj[item.col] : 'col-span-3'}>
+                        <div key={index} className={`${!item.hidden ? 'block' : 'hidden'} ${item.col ? colObj[item.col] : 'col-span-3'}`}>
                            <PasswordInput
                               id={index}
                               {...item}
@@ -137,50 +137,50 @@ const SForm = ({
                      );
                   case 'file':
                      return (
-                        <div className={item.col ? colObj[item.col] : 'col-span-3'}>
+                        <div className={`${!item.hidden ? 'block' : 'hidden'} ${item.col ? colObj[item.col] : 'col-span-3'}`}>
                            <FileInput key={index} id={index} {...item} control={control} error={errors[item.name]} />
                         </div>
                      );
                   case 'checkbox':
                      return (
-                        <div className={item.col ? colObj[item.col] : 'col-span-3'}>
+                        <div className={`${!item.hidden ? 'block' : 'hidden'} ${item.col ? colObj[item.col] : 'col-span-3'}`}>
                            <CheckBox key={index} id={index} {...item} control={control} error={errors[item.name]} />
                         </div>
                      );
                   case 'select':
                      return (
-                        <div className={item.col ? colObj[item.col] : 'col-span-3'}>
+                        <div className={`${!item.hidden ? 'block' : 'hidden'} ${item.col ? colObj[item.col] : 'col-span-3'}`}>
                            <SelectInput key={index} id={index} {...item} control={control} error={errors[item.name]} />
                         </div>
                      );
                   case 'multi_select':
                      return (
-                        <div className={item.col ? colObj[item.col] : 'col-span-3'}>
+                        <div className={`${!item.hidden ? 'block' : 'hidden'} ${item.col ? colObj[item.col] : 'col-span-3'}`}>
                            <SelectInput key={index} id={index} {...item} multiple={true} control={control} error={errors[item.name]} />
                         </div>
                      );
                   case 'switch':
                      return (
-                        <div className={item.col ? colObj[item.col] : 'col-span-3'}>
+                        <div className={`${!item.hidden ? 'block' : 'hidden'} ${item.col ? colObj[item.col] : 'col-span-3'}`}>
                            <SwitchBox key={index} id={index} {...item} control={control} error={errors[item.name]} />
                         </div>
                      );
                   case 'date':
                   case 'dateTime':
                      return (
-                        <div className={item.col ? colObj[item.col] : 'col-span-3'}>
+                        <div className={`${!item.hidden ? 'block' : 'hidden'} ${item.col ? colObj[item.col] : 'col-span-3'}`}>
                            <DateInput key={index} id={index} {...item} control={control} error={errors[item.name]} />
                         </div>
                      );
                   case 'slider':
                      return (
-                        <div className={item.col ? colObj[item.col] : 'col-span-3'}>
+                        <div className={`${!item.hidden ? 'block' : 'hidden'} ${item.col ? colObj[item.col] : 'col-span-3'}`}>
                            <SliderInput key={index} id={index} {...item} control={control} error={errors[item.name]} />
                         </div>
                      );
                   case 'uploadButton':
                      return (
-                        <div className={item.col ? colObj[item.col] : 'col-span-3'}>
+                        <div className={`${!item.hidden ? 'block' : 'hidden'} ${item.col ? colObj[item.col] : 'col-span-3'}`}>
                            <UploadButton key={index} id={index} {...item} control={control} error={errors[item.name]} />
                         </div>
                      );

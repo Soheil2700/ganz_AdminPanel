@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import PermissionChecker from '@/components/permissionChecker';
 import { useCategoriesQuery } from '@/services/api/getCategoriesQuery.api';
 import api from '@/services/interceptor';
@@ -8,13 +8,18 @@ import Button from '@/components/shared/Button';
 import SForm from '@/components/shared/formInputs/SForm';
 import IconPlus from '@/components/Icon/IconPlus';
 import { notifySuccess } from '@/components/shared/notify/SNotify';
+import { useDispatch } from 'react-redux';
+import { setPageTitle } from '../../../store/themeConfigSlice';
 
 const Category = () => {
    const { data = { data: [] }, mutate } = useCategoriesQuery();
    const [openModal, setOpenModal] = useState(false);
    const [active, setActive] = useState(1);
    const [formValues, setFormValues] = useState({});
-
+   const dispatch = useDispatch();
+   useEffect(() => {
+      dispatch(setPageTitle('دسته بندی ها'));
+   }, []);
    const section = useMemo(() => {
       const sectionGenerator = (categories) => {
          let result = [];
@@ -35,14 +40,14 @@ const Category = () => {
    const fields = useMemo(
       () => [
          {
-            label: 'نام دسته بندی',
+            label: 'نام دسته بندی (انگلیسی)',
             name: 'name',
             type: 'text',
             required: true,
             col: 4,
          },
          {
-            label: 'لیبل دسته بندی',
+            label: 'لیبل دسته بندی(فارسی)',
             name: 'label',
             type: 'text',
             required: true,

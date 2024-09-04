@@ -7,6 +7,9 @@ import 'swiper/css/pagination';
 import api from '@/services/interceptor';
 import { Pagination, Autoplay } from 'swiper';
 import IconHorizontalDots from '../Icon/IconHorizontalDots';
+import Button from '@/components/shared/Button';
+import IconShoppingBag from '../Icon/IconShoppingBag';
+import { notifyError } from './notify/SNotify';
 
 interface Props {
    proId: number;
@@ -17,10 +20,13 @@ const DetailProuduct = ({ proId }: Props) => {
    const [activeSlide, setActiveSlide] = useState(0);
    const [allData, setAllData] = useState([]);
    const moment = require('moment-jalaali');
+
    useEffect(() => {
-      api.get('api/product/' + proId).then((res) => {
-         setAllData(res.data);
-      });
+      api.get('api/product/' + proId)
+         .then((res) => {
+            setAllData(res.data);
+         })
+         .catch((res) => notifyError('خطایی رخ داده است'));
    }, []);
 
    const images = allData.images?.length > 4 ? allData.images?.slice(0, 4) : allData.images;
@@ -89,39 +95,57 @@ const DetailProuduct = ({ proId }: Props) => {
          </div>
          <div className="flex w-full flex-col gap-10 xl:flex-row">
             <div className="flex w-full flex-auto flex-col items-start gap-2">
-               <h2 className="mb-10 w-full border-b pb-3 text-xl font-semibold  dark:text-white">
-                  <span>{allData.title}،</span>
-                  <span> مدل {allData.model}</span>
+               <h2 className="mb-10 w-full border-b pb-3 text-xl font-semibold dark:text-white">
+                  <span>{allData.title}</span>
                </h2>
                {/* <p className="text-[18px]">{allData.description}</p>
                <p className="text-[18px]">{allData.description}</p> */}
-
                <ul className={`m-0 h-auto list-inside list-disc overflow-hidden p-0 transition-all duration-300`}>
-                  <li className="mb-3 list-none text-base text-black dark:text-white">ویژگی های محصول</li>
                   <li className="mb-1 text-sm">
                      <span>دسته بندی: {allData?.Category?.label}</span>
-                  </li>
-                  <li className="mb-1 text-sm">
-                     <span>{allData.title} :</span>
-                     <span> {allData.description}</span>
                   </li>
                   <li className="mb-1 text-sm">
                      <span>تعداد : </span>
                      <span>{allData.quantity}</span>
                   </li>
                   <li className="mb-1 text-sm">
-                     <span>قیمت: {allData?.price.toLocaleString()} تومان</span>
+                     <span>قیمت: {allData?.price?.toLocaleString()} تومان</span>
                   </li>
                   <li className="mb-1 text-sm">
-                     <span>قیمت با تخفیف: {allData?.discounted_price.toLocaleString()} تومان</span>
+                     <span>قیمت با تخفیف: {allData?.discounted_price?.toLocaleString()} تومان</span>
                   </li>
                   <li className="mb-1 text-sm">
                      <span>تاریخ ایجاد محصول: {moment(allData?.createdAt).format('jYYYY/jM/jD')}</span>
                   </li>
-                  <li className="mb-1 text-sm">
-                     <span>توضیحات: {allData?.description} تومان</span>
+                  <li className="mb-3 text-sm">
+                     <span>توضیح کوتاه: {allData?.summary}</span>
                   </li>
-               </ul>
+                  <li className="mb-3 text-sm">
+                     <span>توضیحات: {allData?.description}</span>
+                  </li>{' '}
+                  {allData?.attributes && (
+                     <li className="flex gap-1 text-sm ">
+                        <span>ویژگی ها: </span>
+                        <span className="grid gap-1">
+                           {Object.entries(allData?.attributes)?.map((att, index) => (
+                              <div className="grid grid-cols-3 gap-1" key={index}>
+                                 <span className="col-span-1 rounded-lg bg-slate-200 px-5 py-1 ">{att[0]}</span>
+                                 <ul className={`col-span-2 rounded-lg bg-slate-200 px-5 py-1 text-black `}>
+                                    {att[1].map((item) => (
+                                       <li key={item.id}>{item.label}</li>
+                                    ))}
+                                 </ul>
+                              </div>
+                           ))}
+                        </span>
+                     </li>
+                  )}
+               </ul>{' '}
+               {!allData?.bulk_cargo && (
+                  <a href={`https://ganzcoffee.com/product/${proId}`} target="_blank">
+                     <Button label="مشاهده در فروشگاه" icon={<IconShoppingBag />} />
+                  </a>
+               )}
             </div>
          </div>
       </div>

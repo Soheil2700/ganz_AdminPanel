@@ -169,9 +169,13 @@ const Header = () => {
             <div className="relative flex w-full items-center bg-white px-5 py-2.5 dark:bg-black">
                <div className="horizontal-logo flex items-center justify-between ltr:mr-2 rtl:ml-2 lg:hidden">
                   <Link href="/" className="main-logo flex shrink-0 items-center">
-                     <img className="inline w-8 ltr:-ml-1 rtl:-mr-1" src="/assets/images/logo.svg" alt="logo" />
-                     <span className="hidden align-middle text-2xl  font-semibold  transition-all duration-300 ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light md:inline">
-                        VRISTO
+                     <img
+                        className="inline w-8 flex-none rounded-lg bg-slate-800 p-1 ltr:-ml-1 rtl:-mr-1"
+                        src="/assets/images/logo-mini.png"
+                        alt="logo"
+                     />
+                     <span className="hidden align-middle text-xl  font-semibold  transition-all duration-300 ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light md:inline">
+                        Ganz Coffee
                      </span>
                   </Link>
                   <button
@@ -188,7 +192,7 @@ const Header = () => {
                      <li>
                         <Link
                            href="/apps/calendar"
-                           className="block rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60"
+                           className="block p-2 rounded-full bg-white-light/40 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60"
                         >
                            <IconCalendar />
                         </Link>
@@ -196,7 +200,7 @@ const Header = () => {
                      <li>
                         <Link
                            href="/apps/todolist"
-                           className="block rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60"
+                           className="block p-2 rounded-full bg-white-light/40 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60"
                         >
                            <IconEdit />
                         </Link>
@@ -204,7 +208,7 @@ const Header = () => {
                      <li>
                         <Link
                            href="/apps/chat"
-                           className="block rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60"
+                           className="block p-2 rounded-full bg-white-light/40 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60"
                         >
                            <IconChatNotification />
                         </Link>
@@ -249,7 +253,7 @@ const Header = () => {
                      </button>
                   </div>
                   <div>
-                     {themeConfig.theme === 'light' ? (
+                     {/* {themeConfig.theme === 'light' ? (
                         <button
                            className={`${
                               themeConfig.theme === 'light' &&
@@ -272,7 +276,7 @@ const Header = () => {
                         >
                            <IconMoon />
                         </button>
-                     )}
+                     )} */}
                      {/* {themeConfig.theme === 'system' && (
                         <button
                            className={`${
@@ -290,7 +294,7 @@ const Header = () => {
                                 offset={[0, 8]}
                                 placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
                                 btnClassName="block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60"
-                                button={flag && <img className="h-5 w-5 rounded-full object-cover" src={`/assets/images/flags/${flag.toUpperCase()}.svg`} alt="flag" />}
+                                button={flag && <img className="object-cover w-5 h-5 rounded-full" src={`/assets/images/flags/${flag.toUpperCase()}.svg`} alt="flag" />}
                             >
                                 <ul className="grid w-[280px] grid-cols-2 gap-2 !px-2 font-semibold text-dark dark:text-white-dark dark:text-white-light/90">
                                     {themeConfig.languageList.map((item: any) => {
@@ -305,7 +309,7 @@ const Header = () => {
                                                         setLocale(item.code);
                                                     }}
                                                 >
-                                                    <img src={`/assets/images/flags/${item.code.toUpperCase()}.svg`} alt="flag" className="h-5 w-5 rounded-full object-cover" />
+                                                    <img src={`/assets/images/flags/${item.code.toUpperCase()}.svg`} alt="flag" className="object-cover w-5 h-5 rounded-full" />
                                                     <span className="ltr:ml-3 rtl:mr-3">{item.name}</span>
                                                 </button>
                                             </li>
@@ -339,7 +343,7 @@ const Header = () => {
                                                 <div className="text-sm font-semibold dark:text-white-light/90">{message.title}</div>
                                                 <div>{message.message}</div>
                                              </span>
-                                             <span className="whitespace-pre rounded bg-white-dark/20 px-1 font-semibold text-dark/60 ltr:ml-auto ltr:mr-2 rtl:ml-2 rtl:mr-auto dark:text-white-dark">
+                                             <span className="px-1 font-semibold whitespace-pre rounded bg-white-dark/20 text-dark/60 ltr:ml-auto ltr:mr-2 rtl:ml-2 rtl:mr-auto dark:text-white-dark">
                                                 {message.time}
                                              </span>
                                              <button
@@ -353,7 +357,7 @@ const Header = () => {
                                        );
                                     })}
                                  </li>
-                                 <li className="mt-5 border-t border-white-light text-center dark:border-white/10">
+                                 <li className="mt-5 text-center border-t border-white-light dark:border-white/10">
                                     <button
                                        type="button"
                                        className="group !h-[48px] justify-center !py-4 font-semibold text-primary dark:text-gray-400"
@@ -366,8 +370,8 @@ const Header = () => {
                            ) : (
                               <li className="mb-5" onClick={(e) => e.stopPropagation()}>
                                  <button type="button" className="!grid min-h-[200px] place-content-center text-lg hover:!bg-transparent">
-                                    <div className="mx-auto mb-4 rounded-full text-white ring-4 ring-primary/30">
-                                       <IconInfoCircle fill={true} className="h-10 w-10" />
+                                    <div className="mx-auto mb-4 text-white rounded-full ring-4 ring-primary/30">
+                                       <IconInfoCircle fill={true} className="w-10 h-10" />
                                     </div>
                                     No data available.
                                  </button>
@@ -384,7 +388,7 @@ const Header = () => {
                         button={
                            <span>
                               <IconBellBing />
-                              <span className="absolute top-0 flex h-3 w-3 ltr:right-0 rtl:left-0">
+                              <span className="absolute top-0 flex w-3 h-3 ltr:right-0 rtl:left-0">
                                  <span className="absolute -top-[3px] inline-flex h-full w-full animate-ping rounded-full bg-success/50 opacity-75 ltr:-left-[3px] rtl:-right-[3px]"></span>
                                  <span className="relative inline-flex h-[6px] w-[6px] rounded-full bg-success"></span>
                               </span>
@@ -407,11 +411,11 @@ const Header = () => {
                                  {notifications.map((notification) => {
                                     return (
                                        <li key={notification.id} className="dark:text-white-light/90" onClick={(e) => e.stopPropagation()}>
-                                          <div className="group flex items-center px-4 py-2">
-                                             <div className="grid place-content-center rounded">
-                                                <div className="relative h-12 w-12">
+                                          <div className="flex items-center px-4 py-2 group">
+                                             <div className="grid rounded place-content-center">
+                                                <div className="relative w-12 h-12">
                                                    <img
-                                                      className="h-12 w-12 rounded-full object-cover"
+                                                      className="object-cover w-12 h-12 rounded-full"
                                                       alt="profile"
                                                       src={`/assets/images/${notification.profile}`}
                                                    />
@@ -429,7 +433,7 @@ const Header = () => {
                                                 </div>
                                                 <button
                                                    type="button"
-                                                   className="text-neutral-300 opacity-0 hover:text-danger group-hover:opacity-100 ltr:ml-auto rtl:mr-auto"
+                                                   className="opacity-0 text-neutral-300 hover:text-danger group-hover:opacity-100 ltr:ml-auto rtl:mr-auto"
                                                    onClick={() => removeNotification(notification.id)}
                                                 >
                                                    <IconXCircle />
@@ -441,7 +445,7 @@ const Header = () => {
                                  })}
                                  <li>
                                     <div className="p-4">
-                                       <button className="btn btn-primary btn-small block w-full">خواندن تمام اعلانات</button>
+                                       <button className="block w-full btn btn-primary btn-small">خواندن تمام اعلانات</button>
                                     </div>
                                  </li>
                               </>
@@ -449,7 +453,7 @@ const Header = () => {
                               <li onClick={(e) => e.stopPropagation()}>
                                  <button type="button" className="!grid min-h-[200px] place-content-center text-lg hover:!bg-transparent">
                                     <div className="mx-auto mb-4 rounded-full ring-4 ring-primary/30">
-                                       <IconInfoCircle fill={true} className="h-10 w-10 text-primary" />
+                                       <IconInfoCircle fill={true} className="w-10 h-10 text-primary" />
                                     </div>
                                     هیچ داده ای در دسترس نیست!
                                  </button>
@@ -486,7 +490,7 @@ const Header = () => {
                                  <div className="truncate ltr:pl-4 rtl:pr-4">
                                     <h4 className="text-base">
                                        {data?.user?.first_name + ' ' + data?.user?.last_name}
-                                       {/* <span className="rounded bg-success-light px-1 text-xs text-success ltr:ml-2 rtl:ml-2">Pro</span> */}
+                                       {/* <span className="px-1 text-xs rounded bg-success-light text-success ltr:ml-2 rtl:ml-2">Pro</span> */}
                                     </h4>
                                     {/* <button
                                        type="button"
@@ -497,12 +501,12 @@ const Header = () => {
                                  </div>
                               </div>
                            </li>
-                           <li>
+                           {/* <li>
                               <Link href="/users/profile" className="dark:hover:text-white">
                                  <IconUser className="h-4.5 w-4.5 shrink-0 ltr:mr-2 rtl:ml-2" />
                                  پروفایل
                               </Link>
-                           </li>
+                           </li> */}
                            {/* <li>
                               <Link href="/apps/mailbox" className="dark:hover:text-white">
                                  <IconMail className="h-4.5 w-4.5 shrink-0 ltr:mr-2 rtl:ml-2" />
@@ -1038,7 +1042,7 @@ const Header = () => {
                         <Link href="/widgets">{t('widgets')}</Link>
                      </li>
                      <li>
-                        <Link href="https://vristo.sbthemes.com" target="_blank">
+                        <Link href="https://ganzcoffee.com" target="_blank">
                            {t('documentation')}
                         </Link>
                      </li>

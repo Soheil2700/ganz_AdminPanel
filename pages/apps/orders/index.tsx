@@ -6,10 +6,64 @@ import { useDispatch } from 'react-redux';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import Modal from '@/components/shared/modal';
 import Image from 'next/image';
-import { Typography } from '@mui/material';
+import { Link, Typography } from '@mui/material';
 import SForm from '../../../components/shared/formInputs/SForm';
 import { OrderStatus } from '../../../enums/status';
 
+export const grindTypes = [
+   {
+      id: 'COFFEE_BEAN',
+      title: 'دانه قهوه',
+   },
+   {
+      id: 'AEROPRESS',
+      title: 'ایروپرس',
+   },
+   {
+      id: 'CHEMEX',
+      title: 'کمکس',
+   },
+   {
+      id: 'COLD_BREW',
+      title: 'کلد برو',
+   },
+   {
+      id: 'FRANCE',
+      title: 'فرانسه ساز',
+   },
+   {
+      id: 'FRENCH_PRESS',
+      title: 'فرنچ پرس',
+   },
+   {
+      id: 'ESPRESSO',
+      title: 'اسپرسوساز خانگی',
+   },
+   {
+      id: 'MINIPRESSO',
+      title: 'مینی پرسو',
+   },
+   {
+      id: 'MOKA_POT',
+      title: 'موکاپات',
+   },
+   {
+      id: 'SEMI_ESPRESSO',
+      title: 'اسپرسوساز صنعتی',
+   },
+   {
+      id: 'SIPHONE',
+      title: 'سایفون',
+   },
+   {
+      id: 'V60',
+      title: 'V60',
+   },
+   {
+      id: 'TURKISH',
+      title: 'جذوه',
+   },
+];
 const Orders = () => {
    const [openModal, setOpenModal] = useState(false);
    const [orderDetailData, setOrderDetailData] = useState();
@@ -59,19 +113,54 @@ const Orders = () => {
             content={
                <>
                   <div className="flex flex-wrap gap-4 divide-y">
-                     {orderDetailData?.OrderItem.map((item, index) => (
-                        <div className="grid w-full grid-cols-12 items-center gap-2" key={index}>
-                           <Image
-                              className="col-span-2"
-                              alt="d"
-                              src={process.env.NEXT_PUBLIC_BASE_URL + item?.product?.cover}
-                              width={60}
-                              height={70}
-                           />
-                           <Typography className="col-span-7">نام محصول: {item.product.title}</Typography>
-                           <Typography className="col-span-3">تعداد: {item.count}</Typography>
-                        </div>
-                     ))}
+                     {orderDetailData?.OrderItem.map((item, index) => {
+                        return !item?.custom_composition ? (
+                           <div className="grid w-full grid-cols-12 items-center gap-2" key={index}>
+                              <Link
+                                 className="col-span-12 md:col-span-3"
+                                 href={`https://ganzcoffee.com/product/${item.product.slug}`}
+                                 target="_blank"
+                              >
+                                 <Image alt="d" src={process.env.NEXT_PUBLIC_BASE_URL + item?.product?.cover} width={60} height={70} />
+                              </Link>
+                              <Typography className="col-span-12 md:col-span-5">نام محصول: {item.product.title}</Typography>
+                              <Typography className="col-span-12 md:col-span-3">
+                                 نوع آسیاب: {grindTypes.find((grindType) => grindType.id === item.grind_type)?.title}
+                              </Typography>
+                              <Typography className="col-span-12 md:col-span-1">تعداد: {item.count}</Typography>
+                           </div>
+                        ) : (
+                           <div className="grid w-full grid-cols-12 items-center gap-2">
+                              <p className="col-span-12 md:col-span-1">
+                                 نوع آسیاب : {grindTypes.find((grindType) => grindType.id === item?.grind_type)?.title}
+                              </p>
+                              <p className="col-span-12 md:col-span-1">وزن : {item?.custom_composition?.weight + ' کیلوگرم'}</p>
+                              <p className="col-span-12 md:col-span-1"> ترکیبات :</p>
+                              <div className="grid w-full grid-cols-1 gap-2 md:grid-cols-3">
+                                 {item?.custom_composition?.Custom_Composition_Item?.map((product) => (
+                                    <div
+                                       className="grid  w-full grid-cols-3 justify-items-center gap-5 gap-y-5 rounded-lg bg-white p-1.5 text-xs shadow-lg md:grid-cols-1 md:gap-0"
+                                       key={product?.product?.id}
+                                    >
+                                       <Image
+                                          alt={product?.product?.title}
+                                          src={process.env.NEXT_PUBLIC_BASE_URL + product?.product?.cover}
+                                          className="col-span-1 h-[100px] w-full rounded-lg md:h-[150px]"
+                                          width={100}
+                                          height={100}
+                                       />
+                                       <div className="col-span-2 flex flex-col justify-center gap-2 p-2">
+                                          <p className="text-sm font-semibold">{product?.product?.title}</p>
+                                          <div className="bg-primaryDark w-fit rounded-br-lg rounded-tl-lg p-0.5 px-2 text-white">
+                                             {product?.percent} درصد
+                                          </div>
+                                       </div>
+                                    </div>
+                                 ))}
+                              </div>
+                           </div>
+                        );
+                     })}
                   </div>
                </>
             }
