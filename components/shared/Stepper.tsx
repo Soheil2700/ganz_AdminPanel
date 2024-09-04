@@ -5,14 +5,15 @@ interface Porps {
    activeStep: number;
    setActiveStep: any;
    hideButtons: boolean;
+   clickable?: boolean;
 }
 
-const Stepper = ({ steps = [], activeStep = 1, setActiveStep = () => {}, hideButtons = false }: Porps) => {
+const Stepper = ({ steps = [], activeStep = 1, setActiveStep = () => {}, clickable = false, hideButtons = false }: Porps) => {
    let col = 'grid-cols-' + steps.length;
    let calc = activeStep === steps.length ? '100%' : (100 / (2 * steps.length)) * (2 * activeStep - 1) + '%';
    return (
       <div className="dark:bg-black">
-         <div className=" mb-5 flex flex-col">
+         <div className="mb-5 flex flex-col ">
             <div className="mt-4 inline-block w-full">
                <div className="relative z-[1]">
                   <div
@@ -26,7 +27,7 @@ const Stepper = ({ steps = [], activeStep = 1, setActiveStep = () => {}, hideBut
                               type="button"
                               className={`${activeStep === index + 1 ? '!border-primary !bg-primary text-white' : ''}
                                                 flex h-16 w-16 items-center justify-center rounded-full border-[3px] border-[#f3f2ee] bg-white dark:border-[#1b2e4b] dark:bg-[#253b5c]`}
-                              // onClick={() => setActiveStep(index + 1)}
+                              onClick={() => clickable && setActiveStep(index + 1)}
                            >
                               {item.icon}
                            </button>

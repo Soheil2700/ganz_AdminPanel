@@ -141,9 +141,11 @@ const HoverTable = ({
                                        <Eye className="m-auto cursor-pointer" />
                                     </Button>
                                  )}
-                                 <Button variant="text" onClick={() => deleteIconOnClick(data)}>
-                                    <IconTrashLines className="m-auto cursor-pointer" />
-                                 </Button>
+                                 {deleteIconOnClick && (
+                                    <Button variant="text" onClick={() => deleteIconOnClick(data)}>
+                                       <IconTrashLines className="m-auto cursor-pointer" />
+                                    </Button>
+                                 )}
                                  {iconActions}
                                  {/* </Tippy> */}
                               </td>

@@ -1,15 +1,15 @@
 import api from '../interceptor';
 import useSWR from 'swr';
 
-function fetcher(page) {
+function fetcher(page = 1) {
    return api
-      .get(`api/product?page=${page}&sortBy=CREATION_DATE&size=12`)
+      .get(`api/product?bulk_cargo=true&page=${page}&sortBy=CREATION_DATE&size=12`)
       .then((res) => res.data)
       .catch((err) => console.log(err));
 }
 
-export function useProductsQuery(page = 1) {
-   return useSWR('products', () => fetcher(page));
+export function usePersonalBlendQuery(page = 1) {
+   return useSWR('personalBlend', () => fetcher(page));
 }
 
 async function getProduct(id) {

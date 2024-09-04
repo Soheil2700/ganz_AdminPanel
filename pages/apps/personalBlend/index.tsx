@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '@/store/themeConfigSlice';
 import PermissionChecker from '@/components/permissionChecker';
-import { useProductsQuery } from '@/services/api/getProductsQuery';
 import Button from '@/components/shared/Button';
 import IconPlus from '@/components/Icon/IconPlus';
 import Modal from '@/components/shared/modal';
@@ -13,13 +12,14 @@ import IconTrash from '@/components/Icon/IconTrash';
 import IconEdit from '@/components/Icon/IconEdit';
 import { notifySuccess } from '@/components/shared/notify/SNotify';
 import DetailProuduct from '@/components/shared/detailProuduct';
-import DropDownMenu from '@/components/shared/dropDownMenu/DropDownMenu';
+import DropDownMenu from '../../../components/shared/dropDownMenu/DropDownMenu';
 import IconSquareCheck from '@/components/Icon/IconSquareCheck';
 import SForm from '@/components/shared/formInputs/SForm';
 import moment from 'moment-jalaali';
-import { notifyError } from '@/components/shared/notify/SNotify';
-import IconTag from '@/components/Icon/IconTag';
-import ProductAttrs from '@/components/shared/productAttrs';
+import { notifyError } from '../../../components/shared/notify/SNotify';
+import IconTag from '../../../components/Icon/IconTag';
+import ProductAttrs from '../../../components/shared/productAttrs';
+import { usePersonalBlendQuery } from '../../../services/api/getPersonalBlendQuery';
 import Pagination from '@mui/material/Pagination';
 
 const Products = () => {
@@ -43,7 +43,7 @@ const Products = () => {
    const [productId, setProductId] = useState({});
    const [selectedAtt, setSelectedAtt] = useState();
    const [page, setPage] = useState(1);
-   const { data, isLoading, mutate } = useProductsQuery(page);
+   const { data, isLoading, mutate } = usePersonalBlendQuery(page);
 
    const handleChange = (event, value) => {
       setPage(value);
@@ -103,7 +103,7 @@ const Products = () => {
             quantity: +values?.quantity,
             price: +values?.price,
             // attributes: arr.filter((item) => item.id !== 0),
-            bulk_cargo: values?.bulk_cargo ? values.bulk_cargo : false,
+            bulk_cargo: true,
             step: 1,
          })
             .then((res) => {
@@ -157,7 +157,6 @@ const Products = () => {
                .catch((err) => {});
          }
          delete values.cover;
-         delete values.grind_types;
          api.patch(`api/product/${editData.id}`, {
             ...values,
             quantity: +values.quantity,
@@ -433,6 +432,20 @@ const Products = () => {
                                     }
                                  />
                               </div>
+                              {/* <span
+                              className="absolute hidden p-1 transition-all rounded-full cursor-pointer right-1 top-1 bg-primary group-hover:flex"
+                              onClick={() => {
+                                 if (item.id) {
+                                    api.get('admin/api/product/detail/' + item.id).then((res) => {
+                                       setEditData(res.data);
+                                    });
+                                 }
+                                 setEditPhase(true);
+                                 setOpenModal(true);
+                              }}
+                           >
+                              <IconEdit className="text-white-light" />
+                           </span>*/}
                               <span
                                  className={`absolute left-1 top-1  cursor-pointer rounded-full bg-primary p-1 transition-all duration-200 group-hover:flex ${
                                     selectedProducts.find((i) => i === item.id) ? 'flex' : 'hidden'
@@ -453,7 +466,7 @@ const Products = () => {
                            </div>
                         </div>
                      ))}
-            </div>
+            </div>{' '}
             <div className="mt-20 flex w-full justify-center self-end">
                {data?.total / 12 > 1 && (
                   <Pagination

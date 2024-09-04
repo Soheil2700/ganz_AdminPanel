@@ -73,7 +73,7 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
             type: 'number',
          },
          {
-            label: 'قیمت',
+            label: 'قیمت بر اساس یک کیلوگرم',
             name: 'price',
             type: 'number',
             required: true,
@@ -119,6 +119,7 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
             },
             disabled: editPhase,
          },
+
          {
             label: 'توضیحات',
             name: 'description',
@@ -133,7 +134,7 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
       <SForm
          formStructure={fields}
          submitHandler={(value) => {
-            onSubmit({ ...value, images });
+            onSubmit({ ...value, images, bulk_cargo: true });
             setCategoryName(value.categoryName1);
          }}
          editValues={editData}

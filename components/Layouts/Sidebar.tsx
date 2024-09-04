@@ -92,9 +92,9 @@ const Sidebar = () => {
             <div className="h-full bg-white dark:bg-black">
                <div className="flex items-center justify-between px-4 py-3">
                   <Link href="/" className="main-logo flex shrink-0 items-center">
-                     <img className="ml-[5px] w-8 flex-none" src="/assets/images/logo.svg" alt="logo" />
+                     <img className="ml-[5px] w-12 flex-none rounded-lg bg-slate-800 p-1" src="/assets/images/logo-mini.png" alt="logo" />
                      <span className="align-middle text-2xl font-semibold ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light lg:inline">
-                        {t('VRISTO')}
+                        {t('Ganz Coffee')}
                      </span>
                   </Link>
 
@@ -790,7 +790,7 @@ const Sidebar = () => {
                      </h2>
 
                      <li className="menu nav-item">
-                        <Link href="https://vristo.sbthemes.com" target="_blank" className="nav-link group">
+                        <Link href="https://ganzcoffee.com" target="_blank" className="nav-link group">
                            <div className="flex items-center">
                               <IconMenuDocumentation className="shrink-0 group-hover:!text-primary" />
                               <span className="text-black ltr:pl-3 rtl:pr-3 dark:text-[#506690] dark:group-hover:text-white-dark">
