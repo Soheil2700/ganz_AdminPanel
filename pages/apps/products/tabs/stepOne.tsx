@@ -20,7 +20,6 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
       optionData?.categories.forEach((item) => item.subCategories.forEach((i) => arr.push(i)));
       return arr;
    };
-   console.log(editPhase);
 
    const fields = useMemo(
       () => [
