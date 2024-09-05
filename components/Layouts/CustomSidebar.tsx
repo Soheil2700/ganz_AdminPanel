@@ -8,7 +8,7 @@ import IconMinus from '../Icon/IconMinus';
 import Link from 'next/link';
 import IconCaretsDown from '../Icon/IconCaretsDown';
 import IconProduct from '@/components/Icon/IconBox';
-import IconGallery from '@/components/Icon/IconGallery';
+import IconGallery from '../Icon/IconGallery';
 import IconCategory from '@/components/Icon/IconArchive';
 import IconBarChart from '../Icon/IconBarChart';
 import IconAttribute from '@/components/Icon/IconListCheck';

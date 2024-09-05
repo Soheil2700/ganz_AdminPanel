@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { setPageTitle } from '@/store/themeConfigSlice';
-import Button from '@/components/shared/Button';
 import IconPlus from '@/components/Icon/IconPlus';
+import IconTrash from '@/components/Icon/IconTrash';
+import Button from '@/components/shared/Button';
 import SForm from '@/components/shared/formInputs/SForm';
 import Modal from '@/components/shared/modal';
-import api from '@/services/interceptor';
 import { notifyError, notifySuccess } from '@/components/shared/notify/SNotify';
+import api from '@/services/interceptor';
+import { setPageTitle } from '@/store/themeConfigSlice';
 import Image from 'next/image';
-import IconTrash from '@/components/Icon/IconTrash';
+import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 
 const Banners = () => {
    const dispatch = useDispatch();
@@ -63,7 +63,7 @@ const Banners = () => {
                     <div key={i} className="relative h-52 w-full animate-pulse overflow-hidden rounded-lg bg-slate-200 lg:h-64"></div>
                  ))
                : allData?.banners?.map((banner) => (
-                    <div className="relative h-52 w-full overflow-hidden rounded-lg border shadow-lg lg:h-64">
+                    <div key={banner.id} className="relative h-52 w-full overflow-hidden rounded-lg border shadow-lg lg:h-64">
                        <Image
                           alt="banner"
                           width={400}
@@ -128,12 +128,6 @@ const Banners = () => {
                      formData.append('image', image);
                      console.log({ ...formValues, image: formData });
                      submitHandler({ ...formValues, image: formData });
-
-                     //  if (image) {
-                     //     const formData = new FormData();
-                     //     console.log(formData);
-                     //     submitHandler({ ...formValues, image: formData.append('image', image) });
-                     //  }
                   }}
                />
             }
