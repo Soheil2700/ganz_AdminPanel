@@ -28,8 +28,10 @@ const ProductAttrs = ({ proId }: Props) => {
                            <span
                               onClick={() => {
                                  api.delete(`api/attribute/remove-allocation`, {
-                                    products: [allData?.id],
-                                    attributeValues: [item?.id],
+                                    data: {
+                                       products: [allData?.id],
+                                       attributeValues: [item?.id],
+                                    },
                                  })
                                     .then(() => {
                                        notifySuccess('ویژگی با موفقیت حذف شد.');

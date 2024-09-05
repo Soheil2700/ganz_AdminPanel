@@ -8,6 +8,7 @@ import IconMinus from '../Icon/IconMinus';
 import Link from 'next/link';
 import IconCaretsDown from '../Icon/IconCaretsDown';
 import IconProduct from '@/components/Icon/IconBox';
+import IconGallery from '@/components/Icon/IconGallery';
 import IconCategory from '@/components/Icon/IconArchive';
 import IconBarChart from '../Icon/IconBarChart';
 import IconAttribute from '@/components/Icon/IconListCheck';
@@ -91,7 +92,21 @@ const CustomSidebar = () => {
                            </div>
                         </Link>
                      </li> */}
+                     <h2 className="-mx-4 mb-1 flex items-center bg-white-light/30 px-7 py-3 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
+                        <IconMinus className="hidden h-5 w-4 flex-none" />
+                        <span>مدیریت بنر</span>
+                     </h2>
 
+                     <li className="menu nav-item">
+                        <Link href="/apps/banners" className="nav-link group">
+                           <div className="flex items-center">
+                              <IconGallery className="shrink-0 group-hover:!text-primary" />
+                              <span className="text-black ltr:pl-3 rtl:pr-3 dark:text-white-light dark:group-hover:text-white-dark">
+                                 تعریف و حذف بنر
+                              </span>
+                           </div>
+                        </Link>
+                     </li>
                      <h2 className="-mx-4 mb-1 flex items-center bg-white-light/30 px-7 py-3 font-extrabold uppercase dark:bg-dark dark:bg-opacity-[0.08]">
                         <IconMinus className="hidden h-5 w-4 flex-none" />
                         <span>{t('products')}</span>
