@@ -647,9 +647,6 @@ const Header = () => {
                         <Link href="/components/counter">{t('counter')}</Link>
                      </li>
                      <li>
-                        <Link href="/components/sweetalert">{t('sweet_alerts')}</Link>
-                     </li>
-                     <li>
                         <Link href="/components/timeline">{t('timeline')}</Link>
                      </li>
                      <li>
