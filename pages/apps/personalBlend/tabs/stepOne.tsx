@@ -25,26 +25,31 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
    const fields = useMemo(
       () => [
          {
-            label: 'نام محصول',
+            label: 'نام محصول (فارسی)',
+            col: 6,
             name: 'title',
             type: 'text',
             required: true,
          },
          {
-            label: 'slug',
+            label: 'اسلاگ (فارسی بدون فاصله)',
+            col: 6,
             name: 'slug',
             type: 'text',
+            hidden: editPhase,
             required: true,
          },
          {
             label: 'خلاصه محصول',
             name: 'summary',
+            col: 6,
             type: 'text',
             required: true,
          },
          {
             label: 'دسته بندی سطح یک',
             name: 'categoryName1',
+            col: 6,
             type: 'select',
             options: optionData?.categories || [],
             optionKey: 'name',
@@ -56,6 +61,7 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
          {
             label: 'دسته بندی سطح دو',
             name: 'categoryName',
+            col: 6,
             type: 'select',
             options: formValues.categoryName1
                ? optionData?.categories?.find((item) => item.name === formValues.categoryName1)?.subCategories
@@ -70,11 +76,13 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
          {
             label: 'تعداد موجودی',
             name: 'quantity',
+            col: 6,
             type: 'number',
          },
          {
-            label: 'قیمت بر اساس یک کیلوگرم',
+            label: 'قیمت بر اساس یک کیلوگرم (تومان)',
             name: 'price',
+            col: 6,
             type: 'number',
             required: true,
          },
@@ -82,6 +90,7 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
             label: 'تصویر اصلی محصول',
             name: 'image',
             title: 'عکس محصول را بارگذاری نمایید',
+            col: 6,
             type: 'file',
             customOnChange: (value) => {
                setImages((prev) => [...prev, value[0]]);
@@ -93,6 +102,7 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
             label: 'سایر تصویر محصول',
             name: 'image2',
             title: 'عکس محصول را بارگذاری نمایید',
+            col: 6,
             type: 'file',
             customOnChange: (value) => {
                setImages((prev) => [...prev, value[0]]);
@@ -103,26 +113,17 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
             label: 'سایر تصویر محصول',
             name: 'image3',
             title: 'عکس محصول را بارگذاری نمایید',
+            col: 6,
             type: 'file',
             customOnChange: (value) => {
                setImages((prev) => [...prev, value[0]]);
             },
             disabled: editPhase,
          },
-         {
-            label: 'سایر تصویر محصول',
-            name: 'image4',
-            title: 'عکس محصول را بارگذاری نمایید',
-            type: 'file',
-            customOnChange: (value) => {
-               setImages((prev) => [...prev, value[0]]);
-            },
-            disabled: editPhase,
-         },
-
          {
             label: 'توضیحات',
             name: 'description',
+            col: 6,
             type: 'textarea',
             required: true,
          },
@@ -131,14 +132,26 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
    );
 
    return (
-      <SForm
-         formStructure={fields}
-         submitHandler={(value) => {
-            onSubmit({ ...value, images, bulk_cargo: true });
-            setCategoryName(value.categoryName1);
-         }}
-         editValues={editData}
-      />
+      <>
+         <SForm
+            formStructure={fields}
+            submitHandler={(value) => {
+               onSubmit({ ...value, images, bulk_cargo: true });
+               setCategoryName(value.categoryName1);
+            }}
+            editValues={editData}
+            submitButtonText={editPhase ? 'ویرایش محصول' : 'ایجاد محصول'}
+         />
+         <ul className="list-disc px-5 text-sm font-medium leading-8">
+            <li>نام محصولات و اسلاگ باید یکتا و غیرتکراری باشد.</li>
+            <li>دقت داشته باشید که همه‌ی قیمت ها به تومان و براساس یک کیلوگرم وارد شود.</li>
+            <li>
+               اسلاگ در واقع همان نام محصول است که به جای فاصله در آن از _ استفاده میشود و برای نمایش در یو آر ال می باشد.(برای مثال اگر اسم
+               محصول قهوه فوری است به صورت قهوه_فوری نوشته شود)
+            </li>
+            <li>فرمت فایل تصویر باید png یا jpg بوده و حجم آن کمتر از 500kb باشد.</li>
+         </ul>
+      </>
    );
 };
 

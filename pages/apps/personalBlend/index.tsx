@@ -66,7 +66,10 @@ const Products = () => {
          notifyError('اسلاگ نمیتواند کمتر از 4 کاراکتر باشد');
          return;
       }
-
+      if (values.summary.length < 5 || values.summary.length > 70) {
+         notifyError('طول خلاصه محصول باید حداقل 5 کاراکتر و حداکثر 70 کاراکتر باشد.');
+         return;
+      }
       let arr = [];
       arr = Object.entries(values).map(([key, val]) => ({ id: +val }));
       if (editPhase) {
@@ -145,51 +148,6 @@ const Products = () => {
       }
    };
 
-   const packageSubmit = (values) => {
-      if (editPhase) {
-         if (!values.image) {
-            delete values.images;
-         } else {
-            const formData = new FormData();
-            Array.from(packageImage).forEach((i) => formData.append('image', i));
-            api.post(`api/product/${editData.id}/image`, formData)
-               .then((response) => {})
-               .catch((err) => {});
-         }
-         delete values.cover;
-         api.patch(`api/product/${editData.id}`, {
-            ...values,
-            quantity: +values.quantity,
-            price: +values.price,
-         }).then((res) => {
-            mutate();
-            setOpenPackageModal(false);
-            notifySuccess('پکیج با موفقیت ویرایش شد');
-            setActiveStep(1);
-         });
-      } else {
-         api.post('api/product', {
-            ...values,
-            quantity: +values?.quantity,
-            price: +values?.price,
-            // attributes: arr.filter((item) => item.id !== 0),
-            // bulk_cargo: false,
-            // step: 1,
-         }).then((res) => {
-            if (values.images) {
-               const formData = new FormData();
-               Array.from(packageImage).forEach((i) => formData.append('image', i));
-               api.post(`api/product/${res.data.product.id}/image`, formData)
-                  .then((response) => {
-                     setOpenPackageModal(false);
-                  })
-                  .catch((err) => {});
-            }
-            setActiveStep(1);
-            notifySuccess('پکیج با موفقیت ایجاد شد');
-         });
-      }
-   };
    const AttrStep = [
       {
          label: 'تخصیص ویژگی',
@@ -228,8 +186,6 @@ const Products = () => {
                      attributeValues: [values.attributeValues],
                   })
                      .then((res) => {
-                        setSelectedProducts([]);
-                        setOpenAttributeModal(false);
                         notifySuccess('ویژگی با موفقیت تخصیص داده شد');
                      })
                      .catch((error) => notifyError('خطا در افزودن ویژگی'));
@@ -274,19 +230,6 @@ const Products = () => {
                  />
               ),
            },
-           //   {
-           //      label: 'ویژگی ها',
-           //      icon: <IconUser className="w-5 h-5" />,
-           //      content: (
-           //         <StepTwo
-           //            categoryName={categoryName}
-           //            setOpenModal={setOpenModal}
-           //            onSubmit={onSubmit}
-           //            editPhase={editPhase}
-           //            editData={editData}
-           //         />
-           //      ),
-           //   },
         ];
 
    useEffect(() => {
@@ -298,7 +241,6 @@ const Products = () => {
    useEffect(() => {
       dispatch(setPageTitle('محصولات'));
       getAtt();
-      // api.get('/admin/api/discount').then((res) => setDiscountCodes(res.data.discounts));
    }, []);
 
    return (
@@ -314,36 +256,14 @@ const Products = () => {
                      setOpenModal(true);
                   }}
                />
-               {/* {selectedProducts.length === 1 ? (
+               {selectedProducts.length ? (
                   <Button
-                     label="تخصیص ویژگی"
+                     label="تخصیص کد تخفیف"
                      icon={<IconPlus />}
                      onClick={() => {
-                        setOpenAttributeModal(true);
+                        setOpenDiscountModal(true);
                      }}
                   />
-               ) : (
-                  <></>
-               )} */}
-               {selectedProducts.length ? (
-                  <>
-                     {/* <Button
-                        label="ایجاد پکیج"
-                        icon={<IconPlus />}
-                        onClick={() => {
-                           setEditData({});
-                           setEditPhase(false);
-                           setOpenPackageModal(true);
-                        }}
-                     /> */}
-                     <Button
-                        label="تخصیص کد تخفیف"
-                        icon={<IconPlus />}
-                        onClick={() => {
-                           setOpenDiscountModal(true);
-                        }}
-                     />
-                  </>
                ) : (
                   <></>
                )}
@@ -389,63 +309,43 @@ const Products = () => {
                                     ترکیب دلخواه
                                  </span>
                               )}
-                              <div className="absolute right-1 top-1 flex cursor-pointer rounded-full p-1 transition-all">
-                                 <DropDownMenu
-                                    content={
-                                       <>
-                                          <span
-                                             className="flex cursor-pointer rounded-full bg-primary p-1 transition-all"
-                                             onClick={() => {
-                                                if (item.slug) {
-                                                   api.get(`api/product/${item.slug}`).then((res) => {
-                                                      setEditData(res.data);
-                                                   });
-                                                }
-                                                setEditPhase(true);
-                                                setOpenModal(true);
-                                             }}
-                                          >
-                                             <IconEdit className="text-white-light" />
-                                          </span>
-                                          <span
-                                             className="flex cursor-pointer rounded-full bg-primary p-1 transition-all"
-                                             onClick={() => {
-                                                api.delete(`api/product/${item.id}`).then((res) => {
-                                                   mutate();
-                                                   notifySuccess('محصول با موفقیت حذف شد');
-                                                });
-                                             }}
-                                          >
-                                             <IconTrash className="text-white-light" />
-                                          </span>
-                                          <span
-                                             className="flex cursor-pointer rounded-full bg-primary p-1 transition-all"
-                                             onClick={() => {
-                                                setOpenAttributeModal(true);
-                                                setProId(item.slug);
-                                                setSelectedProducts([item.id]);
-                                             }}
-                                          >
-                                             <IconPlus className="text-white-light" />
-                                          </span>
-                                       </>
-                                    }
-                                 />
+                              <div className="absolute right-1 top-1 flex cursor-pointer flex-col gap-2 rounded-full p-1 transition-all">
+                                 <span
+                                    className="flex cursor-pointer rounded-full bg-primary p-1 transition-all"
+                                    onClick={() => {
+                                       if (item.slug) {
+                                          api.get(`api/product/${item.slug}`).then((res) => {
+                                             setEditData(res.data);
+                                          });
+                                       }
+                                       setEditPhase(true);
+                                       setOpenModal(true);
+                                    }}
+                                 >
+                                    <IconEdit className="text-white-light" />
+                                 </span>
+                                 <span
+                                    className="flex cursor-pointer rounded-full bg-primary p-1 transition-all"
+                                    onClick={() => {
+                                       api.delete(`api/product/${item.id}`).then((res) => {
+                                          mutate();
+                                          notifySuccess('محصول با موفقیت حذف شد');
+                                       });
+                                    }}
+                                 >
+                                    <IconTrash className="text-white-light" />
+                                 </span>
+                                 <span
+                                    className="flex cursor-pointer rounded-full bg-primary p-1 transition-all"
+                                    onClick={() => {
+                                       setOpenAttributeModal(true);
+                                       setProId(item.slug);
+                                       setSelectedProducts([item.id]);
+                                    }}
+                                 >
+                                    <IconPlus className="text-white-light" />
+                                 </span>
                               </div>
-                              {/* <span
-                              className="absolute hidden p-1 transition-all rounded-full cursor-pointer right-1 top-1 bg-primary group-hover:flex"
-                              onClick={() => {
-                                 if (item.id) {
-                                    api.get('admin/api/product/detail/' + item.id).then((res) => {
-                                       setEditData(res.data);
-                                    });
-                                 }
-                                 setEditPhase(true);
-                                 setOpenModal(true);
-                              }}
-                           >
-                              <IconEdit className="text-white-light" />
-                           </span>*/}
                               <span
                                  className={`absolute left-1 top-1  cursor-pointer rounded-full bg-primary p-1 transition-all duration-200 group-hover:flex ${
                                     selectedProducts.find((i) => i === item.id) ? 'flex' : 'hidden'
@@ -484,7 +384,7 @@ const Products = () => {
          <Modal
             open={openModal}
             setOpen={setOpenModal}
-            title="تعریف محصول"
+            title={editPhase ? 'ویرایش محصول' : 'ایجاد محصول'}
             size="large"
             content={<Stepper steps={steps} activeStep={activeStep} setActiveStep={setActiveStep} hideButtons={true} />}
          />
@@ -545,65 +445,6 @@ const Products = () => {
                         setSelectedProducts([]);
                      });
                   }}
-               />
-            }
-         />
-         <Modal
-            open={openPackageModal}
-            setOpen={setOpenPackageModal}
-            title="تعریف پکیج"
-            size="large"
-            content={
-               <SForm
-                  formStructure={[
-                     {
-                        label: 'نام محصول',
-                        name: 'title',
-                        type: 'text',
-                        required: true,
-                     },
-                     {
-                        label: 'slug',
-                        name: 'slug',
-                        type: 'text',
-                        required: true,
-                     },
-                     // {
-                     //    label: 'خلاصه محصول',
-                     //    name: 'summary',
-                     //    type: 'text',
-                     //    required: true,
-                     // },
-                     {
-                        label: 'تعداد موجودی',
-                        name: 'quantity',
-                        type: 'number',
-                     },
-                     {
-                        label: 'قیمت',
-                        name: 'price',
-                        type: 'number',
-                        required: true,
-                     },
-                     {
-                        label: 'تصویر محصول',
-                        name: 'image',
-                        title: 'عکس محصول را بارگذاری نمایید',
-                        type: 'file',
-                        multiple: true,
-                        customOnChange: (value) => {
-                           setPackageImage(value);
-                        },
-                        disabled: editPhase,
-                     },
-                     {
-                        label: 'توضیحات',
-                        name: 'description',
-                        type: 'textarea',
-                        required: true,
-                     },
-                  ]}
-                  submitHandler={packageSubmit}
                />
             }
          />

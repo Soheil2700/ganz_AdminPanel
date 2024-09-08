@@ -154,6 +154,22 @@ const HoverTable = ({
                      })}
                   </tbody>
                </table>
+               {
+                  <div className="mt-4 flex items-center justify-center gap-2">
+                     <span>صفحه: </span>
+                     <select
+                        className="addForm-select bg-primaryLight/20 block w-10 rounded-md border border-black px-1 text-sm outline-none"
+                        value={1}
+                        onChange={() => {}}
+                     >
+                        {Array.from({ length: 10 }, (_, i) => i + 1).map((p) => (
+                           <option key={p} value={p}>
+                              {p}
+                           </option>
+                        ))}
+                     </select>
+                  </div>
+               }
             </div>
          </div>
          <Modal

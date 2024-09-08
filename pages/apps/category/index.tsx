@@ -10,6 +10,7 @@ import IconPlus from '@/components/Icon/IconPlus';
 import { notifySuccess } from '@/components/shared/notify/SNotify';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../../store/themeConfigSlice';
+import { notifyError } from '../../../components/shared/notify/SNotify';
 
 const Category = () => {
    const { data = { data: [] }, mutate } = useCategoriesQuery();
@@ -77,7 +78,7 @@ const Category = () => {
             setOpenModal(false);
          })
          .catch((err) => {
-            console.log(err);
+            notifyError('خطا در ایجاد دسته بندی');
          });
    }, []);
 
@@ -93,12 +94,18 @@ const Category = () => {
             title="تعریف دسته بندی"
             size="large"
             content={
-               <SForm
-                  //   formClassName="!grid-cols-1"
-                  formStructure={fields}
-                  submitHandler={onSubmit}
-                  getValues={(val) => setFormValues(val)}
-               />
+               <>
+                  <SForm
+                     //   formClassName="!grid-cols-1"
+                     formStructure={fields}
+                     submitHandler={onSubmit}
+                     getValues={(val) => setFormValues(val)}
+                  />
+                  <ul className="list-disc px-5 text-sm font-medium leading-8">
+                     <li>نام و لیبل دسته بندی باید یکتا و غیرتکراری باشد.</li>
+                     <li>نام دسته بندی باید به صورت انگلیسی باشد و به جای فاصله در آن از _ استفاده شود .(برای مثال coffee_espresso)</li>
+                  </ul>
+               </>
             }
          />
       </PermissionChecker>
