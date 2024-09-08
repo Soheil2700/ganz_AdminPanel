@@ -4,7 +4,7 @@ import SForm from '@/components/shared/formInputs/SForm';
 import api from '../../../services/interceptor';
 import { Button, Card, CardContent, CardHeader } from '@mui/material';
 import HoverTable from '../../../components/shared/tables/hoverTable';
-import { notifySuccess } from '../../../components/shared/notify/SNotify';
+import { notifyError, notifySuccess } from '../../../components/shared/notify/SNotify';
 
 const Attribute = () => {
    const [category, setCategory] = useState('');
@@ -16,7 +16,7 @@ const Attribute = () => {
          {
             type: 'text',
             name: 'name',
-            label: 'نام ویژگی',
+            label: 'نام ویژگی (فارسی)',
             col: 6,
             required: true,
          },
@@ -73,7 +73,7 @@ const Attribute = () => {
             getAtt(category);
             notifySuccess('ویژگی با موفقیت ایجاد شد');
          })
-         .catch((err) => console.log(err));
+         .catch((err) => notifyError('خطا در ایجاد ویژگی'));
    };
    const handleSubmit2 = (values) => {
       let attributeId = values.attributeId;
@@ -106,14 +106,14 @@ const Attribute = () => {
          {
             type: 'text',
             name: `label1`,
-            label: 'لیبل',
+            label: 'لیبل (فارسی)',
             col: 6,
             required: true,
          },
          {
             type: 'text',
             name: `value1`,
-            label: 'مقدار',
+            label: 'مقدار (انگلیسی بدون فاصله)',
             col: 6,
             required: true,
          },

@@ -95,8 +95,13 @@ const DetailProuduct = ({ proId }: Props) => {
          </div>
          <div className="flex w-full flex-col gap-10 xl:flex-row">
             <div className="flex w-full flex-auto flex-col items-start gap-2">
-               <h2 className="mb-10 w-full border-b pb-3 text-xl font-semibold dark:text-white">
+               <h2 className="mb-10 flex w-full items-end justify-between border-b pb-3 text-xl font-semibold dark:text-white">
                   <span>{allData.title}</span>
+                  {!allData?.bulk_cargo && (
+                     <a href={`https://ganzcoffee.com/product/${proId}`} target="_blank">
+                        <Button label="مشاهده در فروشگاه" icon={<IconShoppingBag />} />
+                     </a>
+                  )}
                </h2>
                {/* <p className="text-[18px]">{allData.description}</p>
                <p className="text-[18px]">{allData.description}</p> */}
@@ -123,7 +128,7 @@ const DetailProuduct = ({ proId }: Props) => {
                   <li className="mb-3 text-sm">
                      <span>توضیحات: {allData?.description}</span>
                   </li>{' '}
-                  {allData?.attributes && (
+                  {allData?.attributes && Object.entries(allData?.attributes).length > 0 && (
                      <li className="flex gap-1 text-sm ">
                         <span>ویژگی ها: </span>
                         <span className="grid gap-1">
@@ -141,11 +146,6 @@ const DetailProuduct = ({ proId }: Props) => {
                      </li>
                   )}
                </ul>{' '}
-               {!allData?.bulk_cargo && (
-                  <a href={`https://ganzcoffee.com/product/${proId}`} target="_blank">
-                     <Button label="مشاهده در فروشگاه" icon={<IconShoppingBag />} />
-                  </a>
-               )}
             </div>
          </div>
       </div>

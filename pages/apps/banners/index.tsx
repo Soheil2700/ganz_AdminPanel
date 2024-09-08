@@ -14,18 +14,18 @@ const Banners = () => {
    const dispatch = useDispatch();
    const [openModal, setOpenModal] = useState(false);
    const submitHandler = (values) => {
-      //   api.post(`api/common/upload-image?link="${formValues?.link}"`, values.image)
-      //      .then(() => {
-      //         notifySuccess('بنر با موفقیت اضافه شد.');
-      //         setLoading(true);
-      //         api.get('api/common/landing-page')
-      //            .then((res) => {
-      //               setAllData(res?.data);
-      //            })
-      //            .catch(() => notifyError('خطایی رخ داده است'))
-      //            .finally(() => setLoading(false));
-      //      })
-      //      .catch(() => notifyError('خطا در افزودن بنر.'));
+      api.post(`api/common/upload-image`, values)
+         .then(() => {
+            notifySuccess('بنر با موفقیت اضافه شد.');
+            setLoading(true);
+            api.get('api/common/landing-page')
+               .then((res) => {
+                  setAllData(res?.data);
+               })
+               .catch(() => notifyError('خطایی رخ داده است'))
+               .finally(() => setLoading(false));
+         })
+         .catch(() => notifyError('خطا در افزودن بنر.'));
    };
    const [allData, setAllData] = useState([]);
    const [loading, setLoading] = useState(false);
@@ -51,12 +51,16 @@ const Banners = () => {
          <div className="flex gap-2">
             <Button
                label="ایجاد بنر"
+               isDisabled={allData?.banners?.length === 6}
                icon={<IconPlus />}
                onClick={() => {
                   setOpenModal(true);
                }}
             />
          </div>
+         {allData?.banners?.length === 6 && (
+            <p className="text-sm">ظرفیت بنر های سایت تکمیل شده است، برای افزودن بنر جدید یک بنر قدیمی را حذف کنید.</p>
+         )}
          <div className="grid grid-cols-1 justify-items-center gap-2 md:grid-cols-2 lg:grid-cols-3">
             {loading
                ? Array.from(Array(6).keys()).map((item, i) => (
@@ -126,8 +130,7 @@ const Banners = () => {
                   submitHandler={() => {
                      const formData = new FormData();
                      formData.append('image', image);
-                     console.log({ ...formValues, image: formData });
-                     submitHandler({ ...formValues, image: formData });
+                     submitHandler({ ...formValues, image: formData, position: 'LANDING' });
                   }}
                />
             }

@@ -14,10 +14,11 @@ interface Props {
    icon?: any;
 }
 
-const Button = ({ id, label, type = 'submit', onClick, icon, col, isDisabled, isLoading, handleReset, ref }: Props) => {
+const Button = ({ id, label, type = 'submit', onClick, icon, col, isDisabled = false, isLoading, handleReset, ref }: Props) => {
    return (
       <div>
          <button
+            disabled={isDisabled}
             id={id}
             ref={ref}
             type={type}
