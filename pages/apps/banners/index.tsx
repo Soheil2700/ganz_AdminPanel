@@ -13,8 +13,8 @@ import { useDispatch } from 'react-redux';
 const Banners = () => {
    const dispatch = useDispatch();
    const [openModal, setOpenModal] = useState(false);
-   const submitHandler = (values) => {
-      api.post(`api/common/upload-image`, values)
+   const submitHandler = (formData) => {
+      api.post(`api/common/upload-image?position=LANDING`, formData)
          .then(() => {
             notifySuccess('بنر با موفقیت اضافه شد.');
             setLoading(true);
@@ -130,7 +130,8 @@ const Banners = () => {
                   submitHandler={() => {
                      const formData = new FormData();
                      formData.append('image', image);
-                     submitHandler({ ...formValues, image: formData, position: 'LANDING' });
+                     formData.append('link', formValues.link);
+                     submitHandler(formData);
                   }}
                />
             }
