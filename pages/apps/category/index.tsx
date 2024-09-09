@@ -11,6 +11,7 @@ import { notifySuccess } from '@/components/shared/notify/SNotify';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../../store/themeConfigSlice';
 import { notifyError } from '../../../components/shared/notify/SNotify';
+import IconTrash from '@/components/Icon/IconTrash';
 
 const Category = () => {
    const { data = { data: [] }, mutate } = useCategoriesQuery();
@@ -21,13 +22,49 @@ const Category = () => {
    useEffect(() => {
       dispatch(setPageTitle('دسته بندی ها'));
    }, []);
+   // const section = useMemo(() => {
+   //    const sectionGenerator = (categories) => {
+   //       let result = [];
+   //       categories.forEach((cat) => {
+   //          let catCopy = { title: cat.label };
+   //          if (cat.subCategories && cat.subCategories.length) {
+   //             catCopy.content = <Accordion accordionContent={sectionGenerator(cat.subCategories)} />;
+   //          } else {
+   //             catCopy.content = cat.label;
+   //          }
+   //          result.push(catCopy);
+   //       });
+   //       return result;
+   //    };
+   //    return sectionGenerator(data?.categories || []);
+   // }, [data]);
    const section = useMemo(() => {
       const sectionGenerator = (categories) => {
          let result = [];
          categories.forEach((cat) => {
             let catCopy = { title: cat.label };
             if (cat.subCategories && cat.subCategories.length) {
-               catCopy.content = <Accordion accordionContent={sectionGenerator(cat.subCategories)} />;
+               catCopy.content = cat.subCategories.map(
+                  (item) =>
+                     !item.name.includes('other_') && (
+                        <div className="mb-1 flex w-full items-center justify-between rounded-md border p-2 shadow-md" key={item.id}>
+                           {item.label}
+                           <span
+                              onClick={() => {
+                                 api.delete('/api/category/' + item.id)
+                                    .then(() => {
+                                       notifySuccess('دسته بندی با موفقیت حذف شد.');
+                                       mutate();
+                                    })
+                                    .catch((error) => notifyError('خطا در حذف دسته بندی'));
+                              }}
+                              className="flex cursor-pointer rounded-full p-1 text-black transition-all hover:text-primary"
+                           >
+                              <IconTrash className="w-4" />
+                           </span>
+                        </div>
+                     )
+               );
             } else {
                catCopy.content = cat.label;
             }
@@ -37,7 +74,6 @@ const Category = () => {
       };
       return sectionGenerator(data?.categories || []);
    }, [data]);
-
    const fields = useMemo(
       () => [
          {

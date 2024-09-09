@@ -9,6 +9,7 @@ import Image from 'next/image';
 import { Link } from '@mui/material';
 import SForm from '../../../components/shared/formInputs/SForm';
 import { OrderStatus } from '../../../enums/status';
+import Button from '@/components/shared/Button';
 
 export const grindTypes = [
    {
@@ -66,13 +67,19 @@ export const grindTypes = [
 ];
 const Orders = () => {
    const [openModal, setOpenModal] = useState(false);
+   const [openActionModal, setOpenActionModal] = useState(false);
+   const [page, setPage] = useState(1);
+   const [totalPage, setTotalPage] = useState(1);
    const [orderDetailData, setOrderDetailData] = useState();
    const [rows, setRows] = useState([]);
    const dispatch = useDispatch();
    useEffect(() => {
-      api.get('/api/order/all-orders').then((res) => setRows(res.data.orders.orders));
+      api.get('/api/order/all-orders?size=10&page=' + page).then((res) => {
+         setRows(res.data.orders.orders);
+         setTotalPage(res.data.orders.total);
+      });
       dispatch(setPageTitle('سفارشات'));
-   }, []);
+   }, [page]);
    return (
       <PermissionChecker roles={['ADMIN', 'SELLER']}>
          <div className="lg:my-5">
@@ -85,6 +92,7 @@ const Orders = () => {
                   { name: 'price', label: 'مبلغ سفارش', type: 'text' },
                   { name: 'status', label: 'وضعیت', type: 'status' },
                ]}
+               showAction
                tableData={rows.map((item) => {
                   let price = 0;
                   item.OrderItem.forEach((i) => (price = price + i.unit_cost));
@@ -96,16 +104,77 @@ const Orders = () => {
                   };
                })}
                getSearchValue={(val) => {
-                  api.get('/api/order/all-orders', { params: { ...val } }).then((res) => setRows(res.data.orders.orders));
+                  api.get('/api/order/all-orders?size=10&page=1', { params: { ...val } }).then((res) => setRows(res.data.orders.orders));
                }}
                editIconOnClick={(val) => {
                   setOpenModal(true);
                   setOrderDetailData(val);
                }}
+               actionOnClick={(val) => {
+                  setOpenActionModal(true);
+                  setOrderDetailData(val);
+               }}
                showFilter={true}
                showEdit={true}
+               setPage={setPage}
+               page={page}
+               totalPages={Math.ceil(totalPage / 10)}
+               pagination
             />
          </div>
+         <Modal
+            open={openActionModal}
+            setOpen={setOpenActionModal}
+            title="وضعیت سفارش"
+            content={
+               <div>
+                  <p>تغییر وضعیت سفارش؟</p>
+                  <div className="flex items-center justify-center gap-2">
+                     {' '}
+                     <Button
+                        label="لغو سفارش"
+                        onClick={() =>
+                           api
+                              .put('/api/order/' + orderDetailData.id, {
+                                 status: 'CANCELED',
+                              })
+                              .then(() => {
+                                 setOpenActionModal(false);
+                                 if (page === 1) {
+                                    api.get('/api/order/all-orders?size=10&page=1').then((res) => {
+                                       setPage(1);
+                                       setRows(res.data.orders.orders);
+                                    });
+                                 } else {
+                                    setPage(1);
+                                 }
+                              })
+                        }
+                     />
+                     <Button
+                        label="ارسال سفارش"
+                        onClick={() =>
+                           api
+                              .put('/api/order/' + orderDetailData.id, {
+                                 status: 'POSTED',
+                              })
+                              .then(() => {
+                                 setOpenActionModal(false);
+                                 if (page === 1) {
+                                    api.get('/api/order/all-orders?size=10&page=1').then((res) => {
+                                       setPage(1);
+                                       setRows(res.data.orders.orders);
+                                    });
+                                 } else {
+                                    setPage(1);
+                                 }
+                              })
+                        }
+                     />
+                  </div>
+               </div>
+            }
+         />
          <Modal
             open={openModal}
             setOpen={setOpenModal}
@@ -132,17 +201,26 @@ const Orders = () => {
                               orderDetailData?.address?.description}
                         </div>
                      </div>{' '}
-                     <div className="w-full">
+                     <div className="flex w-full flex-col gap-1">
                         <h2 className="py-2 pb-4 font-medium">اقلام سفارش:</h2>
                         {orderDetailData?.OrderItem.map((item, index) => {
                            return !item?.custom_composition ? (
-                              <div className="grid w-full grid-cols-12 items-center gap-2" key={index}>
+                              <div
+                                 className="grid w-full grid-cols-12 items-center gap-2 rounded-lg border bg-white p-2 shadow-lg"
+                                 key={index}
+                              >
                                  <Link
                                     className="col-span-12 md:col-span-3"
                                     href={`https://ganzcoffee.com/product/${item.product.slug}`}
                                     target="_blank"
                                  >
-                                    <Image alt="d" src={process.env.NEXT_PUBLIC_BASE_URL + item?.product?.cover} width={60} height={70} />
+                                    <Image
+                                       alt="d"
+                                       src={process.env.NEXT_PUBLIC_BASE_URL + item?.product?.cover}
+                                       className="h-16 w-16"
+                                       width={60}
+                                       height={70}
+                                    />
                                  </Link>
                                  <p className="col-span-12 md:col-span-4">نام محصول: {item.product.title}</p>
                                  <p className="col-span-12 md:col-span-3">
@@ -151,33 +229,35 @@ const Orders = () => {
                                  <p className="col-span-12 md:col-span-1">تعداد: {item.count}</p>
                               </div>
                            ) : (
-                              <div className="grid w-full grid-cols-12 items-center gap-2">
-                                 <p className="col-span-12 md:col-span-2">
+                              <div className="grid w-full grid-cols-12 items-center gap-2 rounded-lg border bg-white p-2 shadow-lg">
+                                 <p className="col-span-12 w-max rounded-lg bg-primary p-1 px-2 text-white md:col-span-3">ترکیب سفارشی</p>
+                                 <p className="col-span-12 md:col-span-3">
                                     نوع آسیاب : {grindTypes.find((grindType) => grindType.id === item?.grind_type)?.title}
                                  </p>
-                                 <p className="col-span-12 md:col-span-1">وزن : {item?.custom_composition?.weight + ' کیلوگرم'}</p>
-                                 <p className="col-span-12 md:col-span-1"> ترکیبات :</p>
-                                 <div className="grid w-full grid-cols-1 gap-2 md:grid-cols-3">
-                                    {item?.custom_composition?.Custom_Composition_Item?.map((product) => (
-                                       <div
-                                          className="grid  w-full grid-cols-3 justify-items-center gap-5 gap-y-5 rounded-lg bg-white p-1.5 text-xs shadow-lg md:grid-cols-1 md:gap-0"
-                                          key={product?.product?.id}
-                                       >
-                                          <Image
-                                             alt={product?.product?.title}
-                                             src={process.env.NEXT_PUBLIC_BASE_URL + product?.product?.cover}
-                                             className="col-span-1 h-[100px] w-full rounded-lg md:h-[150px]"
-                                             width={100}
-                                             height={100}
-                                          />
-                                          <div className="col-span-2 flex flex-col justify-center gap-2 p-2">
-                                             <p className="text-sm font-semibold">{product?.product?.title}</p>
-                                             <div className="bg-primaryDark w-fit rounded-br-lg rounded-tl-lg p-0.5 px-2 text-white">
-                                                {product?.percent} درصد
-                                             </div>
+                                 <p className="col-span-12 md:col-span-3">وزن : {item?.custom_composition?.weight + ' کیلوگرم'}</p>{' '}
+                                 <p className="col-span-12 md:col-span-3">تعداد: {item.count}</p>
+                                 <div className="col-span-12">
+                                    {' '}
+                                    ترکیبات :
+                                    <div className="grid w-full grid-cols-1 gap-2 md:grid-cols-3">
+                                       {item?.custom_composition?.Custom_Composition_Item?.map((product) => (
+                                          <div
+                                             className="flex w-full items-center justify-center gap-1 p-1.5 text-xs"
+                                             key={product?.product?.id}
+                                          >
+                                             <Image
+                                                alt={product?.product?.title}
+                                                src={process.env.NEXT_PUBLIC_BASE_URL + product?.product?.cover}
+                                                className="h-16 w-16"
+                                                width={100}
+                                                height={100}
+                                             />
+                                             <p>
+                                                {product?.product?.title} ({product?.percent} درصد)
+                                             </p>
                                           </div>
-                                       </div>
-                                    ))}
+                                       ))}
+                                    </div>
                                  </div>
                               </div>
                            );

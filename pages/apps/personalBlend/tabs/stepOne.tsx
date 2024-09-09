@@ -55,7 +55,7 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
             optionKey: 'name',
             optionLabel: 'label',
             onChange: (val) => setFormValues(val),
-            hidden: editPhase,
+            // hidden: editPhase,
             required: !editPhase,
          },
          {
@@ -70,7 +70,7 @@ const StepOne = ({ setCategoryName, setActiveStep, onSubmit, editPhase, editData
                : [],
             optionKey: 'name',
             optionLabel: 'label',
-            hidden: editPhase,
+            // hidden: editPhase,
             required: !editPhase,
          },
          {

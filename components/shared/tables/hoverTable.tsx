@@ -1,4 +1,5 @@
 import IconTrashLines from '@/components/Icon/IconTrashLines';
+import IconCircleCheck from '@/components/Icon/IconCircleCheck';
 import 'tippy.js/dist/tippy.css';
 import { Button, IconButton } from '@mui/material';
 import { Eye, FilterFunnel01 } from '@untitled-ui/icons-react';
@@ -78,10 +79,16 @@ const HoverTable = ({
    ],
    showFilter = false,
    showEdit = false,
+   showAction = false,
    editIconOnClick,
    deleteIconOnClick,
    iconActions,
    getSearchValue,
+   actionOnClick,
+   pagination = false,
+   page,
+   setPage,
+   totalPages,
 }: Props) => {
    const moment = require('moment-jalaali');
    const [searchValue, setSearchValue] = useState();
@@ -147,29 +154,33 @@ const HoverTable = ({
                                     </Button>
                                  )}
                                  {iconActions}
-                                 {/* </Tippy> */}
+                                 {showAction && (
+                                    <Button variant="text" onClick={() => actionOnClick(data)}>
+                                       <IconCircleCheck className="m-auto cursor-pointer" />
+                                    </Button>
+                                 )}
                               </td>
                            </tr>
                         );
                      })}
                   </tbody>
                </table>
-               {
+               {pagination && (
                   <div className="mt-4 flex items-center justify-center gap-2">
                      <span>صفحه: </span>
                      <select
                         className="addForm-select bg-primaryLight/20 block w-10 rounded-md border border-black px-1 text-sm outline-none"
-                        value={1}
-                        onChange={() => {}}
+                        value={page}
+                        onChange={(e) => setPage(e.target.value)}
                      >
-                        {Array.from({ length: 10 }, (_, i) => i + 1).map((p) => (
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
                            <option key={p} value={p}>
                               {p}
                            </option>
                         ))}
                      </select>
                   </div>
-               }
+               )}
             </div>
          </div>
          <Modal
