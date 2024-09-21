@@ -84,6 +84,7 @@ const InputsGrid = ({
                            lg={item?.col?.lg || 3}
                            md={item?.col?.md || 4}
                            sm={item?.col?.sm || 12}
+                           xs={12}
                            // sx={{ height: "80px" }}
                         >
                            <TextFieldElement
@@ -115,6 +116,7 @@ const InputsGrid = ({
                            lg={item?.col?.lg || 3}
                            md={item?.col?.md || 4}
                            sm={item?.col?.sm || 12}
+                           xs={12}
                         >
                            <TextFieldElement
                               size="small"
@@ -144,6 +146,7 @@ const InputsGrid = ({
                            lg={item?.col?.lg || 3}
                            md={item?.col?.md || 4}
                            sm={item?.col?.sm || 12}
+                           xs={12}
                         >
                            <TextFieldElement
                               size="small"
@@ -174,6 +177,7 @@ const InputsGrid = ({
                            lg={item?.col?.lg || 3}
                            md={item?.col?.md || 4}
                            sm={item?.col?.sm || 12}
+                           xs={12}
                         >
                            <PasswordElement
                               size="small"
@@ -195,6 +199,7 @@ const InputsGrid = ({
                         lg={item?.col?.lg || 3}
                         md={item?.col?.md || 4}
                         sm={item?.col?.sm || 12}
+                        xs={12}
                      >
                         {' '}
                         <FileInput {...item} control={control} error={errors[item.name]} />
@@ -210,6 +215,7 @@ const InputsGrid = ({
                            lg={item?.col?.lg || 3}
                            md={item?.col?.md || 4}
                            sm={item?.col?.sm || 12}
+                           xs={12}
                         >
                            <PasswordRepeatElement
                               size="small"
@@ -235,6 +241,7 @@ const InputsGrid = ({
                            lg={item?.col?.lg || 3}
                            md={item?.col?.md || 4}
                            sm={item?.col?.sm || 12}
+                           xs={12}
                         >
                            <ReactHookFormDatePicker
                               portal={item.portal}
@@ -260,6 +267,7 @@ const InputsGrid = ({
                            lg={item?.col?.lg || 3}
                            md={item?.col?.md || 4}
                            sm={item?.col?.sm || 12}
+                           xs={12}
                         >
                            <CheckboxElement
                               size="small"
@@ -283,6 +291,7 @@ const InputsGrid = ({
                            lg={item?.col?.lg || 3}
                            md={item?.col?.md || 4}
                            sm={item?.col?.sm || 12}
+                           xs={12}
                         >
                            <CheckboxButtonGroup
                               row
@@ -306,6 +315,7 @@ const InputsGrid = ({
                            lg={item?.col?.lg || 3}
                            md={item?.col?.md || 4}
                            sm={item?.col?.sm || 12}
+                           xs={12}
                         >
                            <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
                               <Typography>{item.label}</Typography>
@@ -332,6 +342,7 @@ const InputsGrid = ({
                            lg={item?.col?.lg || 3}
                            md={item?.col?.md || 4}
                            sm={item?.col?.sm || 12}
+                           xs={12}
                         >
                            <SelectElement
                               size="small"
@@ -358,6 +369,7 @@ const InputsGrid = ({
                            lg={item?.col?.lg || 3}
                            md={item?.col?.md || 4}
                            sm={item?.col?.sm || 12}
+                           xs={12}
                         >
                            <MultiSelectElement
                               size="small"
@@ -388,6 +400,7 @@ const InputsGrid = ({
                            lg={item?.col?.lg || 3}
                            md={item?.col?.md || 4}
                            sm={item?.col?.sm || 12}
+                           xs={12}
                         >
                            <Box
                               sx={{
@@ -433,6 +446,7 @@ const InputsGrid = ({
                            lg={item?.col?.lg || 3}
                            md={item?.col?.md || 4}
                            sm={item?.col?.sm || 12}
+                           xs={12}
                         >
                            <TextareaAutosizeElement
                               fullWidth

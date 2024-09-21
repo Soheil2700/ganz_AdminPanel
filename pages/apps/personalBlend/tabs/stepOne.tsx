@@ -181,7 +181,7 @@ const StepOne = ({ setOpenModal, editPhase, editData, setPage }: Props) => {
          name: 'image',
          type: 'component',
          component: (
-            <Grid item xl={4} lg={6} md={12} sm={12}>
+            <Grid item xl={4} lg={6} md={12} sm={12} xs={12}>
                {' '}
                <FileInput
                   customOnChange={(value) => {
@@ -203,7 +203,7 @@ const StepOne = ({ setOpenModal, editPhase, editData, setPage }: Props) => {
          name: 'image2',
          type: 'component',
          component: (
-            <Grid item xl={4} lg={6} md={12} sm={12}>
+            <Grid item xl={4} lg={6} md={12} sm={12} xs={12}>
                {' '}
                <FileInput
                   customOnChange={(value) => {
@@ -224,7 +224,7 @@ const StepOne = ({ setOpenModal, editPhase, editData, setPage }: Props) => {
          name: 'image3',
          type: 'component',
          component: (
-            <Grid item xl={4} lg={6} md={12} sm={12}>
+            <Grid item xl={4} lg={6} md={12} sm={12} xs={12}>
                <FileInput
                   customOnChange={(value) => {
                      setImages((prev) => [...prev, value[0]]);
