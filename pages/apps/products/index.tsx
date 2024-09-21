@@ -200,50 +200,13 @@ const Products = () => {
          content: <ProductAttrs proId={proId} />,
       },
    ];
-   const steps = editPhase
-      ? [
-           {
-              label: 'جزئیات',
-              icon: <IconTag className="h-5 w-5" />,
-              content: (
-                 <StepOne
-                    setCategoryName={setCategoryName}
-                    setActiveStep={setActiveStep}
-                    onSubmit={onSubmit}
-                    editPhase={editPhase}
-                    editData={editPhase ? editData : {}}
-                 />
-              ),
-           },
-        ]
-      : [
-           {
-              label: 'جزئیات',
-              icon: <IconTag className="h-5 w-5" />,
-              content: (
-                 <StepOne
-                    setCategoryName={setCategoryName}
-                    setActiveStep={setActiveStep}
-                    onSubmit={onSubmit}
-                    editPhase={editPhase}
-                    editData={editData}
-                 />
-              ),
-           },
-           //   {
-           //      label: 'ویژگی ها',
-           //      icon: <IconUser className="w-5 h-5" />,
-           //      content: (
-           //         <StepTwo
-           //            categoryName={categoryName}
-           //            setOpenModal={setOpenModal}
-           //            onSubmit={onSubmit}
-           //            editPhase={editPhase}
-           //            editData={editData}
-           //         />
-           //      ),
-           //   },
-        ];
+   const steps = [
+      {
+         label: 'جزئیات',
+         icon: <IconTag className="h-5 w-5" />,
+         content: <StepOne editPhase={editPhase} editData={editData} setOpenModal={setOpenModal} setPage={setPage} />,
+      },
+   ];
 
    useEffect(() => {
       if (selectedProductCategory) {
@@ -475,11 +438,13 @@ const Products = () => {
                         fromDate: moment(val.fromDate).format('YYYY-MM-DD'),
                         thruDate: moment(val.thruDate).format('YYYY-MM-DD'),
                         product_ids: selectedProducts,
-                     }).then((res) => {
-                        notifySuccess('تخفیف تخصیص داده شد');
-                        setOpenDiscountModal(false);
-                        setSelectedProducts([]);
-                     });
+                     })
+                        .then((res) => {
+                           notifySuccess('تخفیف تخصیص داده شد');
+                           setOpenDiscountModal(false);
+                           setSelectedProducts([]);
+                        })
+                        .catch((res) => notifyError('خطایی رخ داده است'));
                   }}
                />
             }

@@ -12,7 +12,6 @@ import IconTrash from '@/components/Icon/IconTrash';
 import IconEdit from '@/components/Icon/IconEdit';
 import { notifySuccess } from '@/components/shared/notify/SNotify';
 import DetailProuduct from '@/components/shared/detailProuduct';
-import DropDownMenu from '../../../components/shared/dropDownMenu/DropDownMenu';
 import IconSquareCheck from '@/components/Icon/IconSquareCheck';
 import SForm from '@/components/shared/formInputs/SForm';
 import moment from 'moment-jalaali';
@@ -200,37 +199,13 @@ const Products = () => {
          content: <ProductAttrs proId={proId} />,
       },
    ];
-   const steps = editPhase
-      ? [
-           {
-              label: 'جزئیات',
-              icon: <IconTag className="h-5 w-5" />,
-              content: (
-                 <StepOne
-                    setCategoryName={setCategoryName}
-                    setActiveStep={setActiveStep}
-                    onSubmit={onSubmit}
-                    editPhase={editPhase}
-                    editData={editPhase ? editData : {}}
-                 />
-              ),
-           },
-        ]
-      : [
-           {
-              label: 'جزئیات',
-              icon: <IconTag className="h-5 w-5" />,
-              content: (
-                 <StepOne
-                    setCategoryName={setCategoryName}
-                    setActiveStep={setActiveStep}
-                    onSubmit={onSubmit}
-                    editPhase={editPhase}
-                    editData={editData}
-                 />
-              ),
-           },
-        ];
+   const steps = [
+      {
+         label: 'جزئیات',
+         icon: <IconTag className="h-5 w-5" />,
+         content: <StepOne editPhase={editPhase} editData={editData} setOpenModal={setOpenModal} setPage={setPage} />,
+      },
+   ];
 
    useEffect(() => {
       if (selectedProductCategory) {

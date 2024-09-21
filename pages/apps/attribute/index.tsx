@@ -5,57 +5,85 @@ import api from '../../../services/interceptor';
 import { Button, Card, CardContent, CardHeader } from '@mui/material';
 import HoverTable from '../../../components/shared/tables/hoverTable';
 import { notifyError, notifySuccess } from '../../../components/shared/notify/SNotify';
+import InputsGrid from '../../../components/shared/formInputs/InputsGrid';
+import { useForm } from 'react-hook-form';
 
 const Attribute = () => {
    const [category, setCategory] = useState('');
    const [show, setShow] = useState(0);
    const [attributes, setAttributes] = useState([]);
    const { data: categories } = useCategoriesQuery();
-   const fields = useMemo(
-      () => [
-         {
-            type: 'text',
-            name: 'name',
-            label: 'نام ویژگی (فارسی)',
-            col: 6,
-            required: true,
+   const { control, handleSubmit, reset } = useForm();
+
+   const inputs1 = [
+      {
+         type: 'select',
+         name: 'categories',
+         label: 'دسته بندی ویژگی',
+         options: categories?.categories,
+         col: { xl: 4, lg: 6, md: 12 },
+         required: true,
+         rules: {
+            required: 'پر کردن این فیلد الزامی میباشد.',
          },
-         {
-            type: 'multi_select',
-            name: 'categories',
-            label: 'دسته بندی ویژگی',
-            options: categories?.categories,
-            optionKey: 'id',
-            optionLabel: 'label',
-            col: 6,
-            required: true,
+      },
+      {
+         type: 'text',
+         name: 'name',
+         label: 'نام ویژگی (فارسی)',
+         col: { xl: 4, lg: 6, md: 12 },
+         required: true,
+         rules: {
+            required: 'پر کردن این فیلد الزامی میباشد.',
+            pattern: {
+               value: /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF0-9 ]{3,}$/,
+               message: 'حداقل سه کاراکتر و فقط اعداد و حروف فارسی و فاصله مجاز است.',
+            },
          },
-      ],
-      [categories]
-   );
-   const [attFields, setAttFields] = useState([]);
-   // const section = useMemo(() => {
-   //    const sectionGenerator = (attributes) => {
-   //       let result = [];
-   //       attributes.forEach((att) => {
-   //          let copy = { title: att.name ? att.name : att.label };
-   //          if (att.AttributeValue && att.AttributeValue.length) {
-   //             copy.content = (
-   //                <div>
-   //                   {att.AttributeValue.map((i) => (
-   //                      <span>{i.label}</span>
-   //                   ))}
-   //                </div>
-   //             );
-   //          } else {
-   //             copy.content = att.name ? att.name : att.label;
-   //          }
-   //          result.push(copy);
-   //       });
-   //       return result;
-   //    };
-   //    return sectionGenerator(attributes || []);
-   // }, [attributes]);
+      },
+   ];
+
+   const inputs2 = [
+      {
+         name: 'attributeId',
+         label: 'ویژگی',
+         type: 'select',
+         options: attributes?.map((item) => ({ ...item, label: item.name })),
+         required: true,
+         rules: {
+            required: 'پر کردن این فیلد الزامی میباشد.',
+         },
+         col: { xl: 4, lg: 6, md: 12 },
+      },
+      {
+         type: 'text',
+         name: `label1`,
+         label: 'لیبل (فارسی)',
+         col: { xl: 4, lg: 6, md: 12 },
+         required: true,
+         rules: {
+            required: 'پر کردن این فیلد الزامی میباشد.',
+            pattern: {
+               value: /^[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF0-9 ]{3,}$/,
+               message: 'حداقل سه کاراکتر و فقط اعداد و حروف فارسی و فاصله مجاز است.',
+            },
+         },
+      },
+      {
+         type: 'text',
+         name: `value1`,
+         label: 'مقدار (انگلیسی بدون فاصله)',
+         col: { xl: 4, lg: 6, md: 12 },
+         required: true,
+         rules: {
+            required: 'پر کردن این فیلد الزامی میباشد.',
+            pattern: {
+               value: /^[a-zA-Z0-9]{4,}$/,
+               message: 'حداقل چهار کاراکتر و فقط کاراکتر انگلیسی و عدد مجاز است.',
+            },
+         },
+      },
+   ];
    const getAtt = (category_name) => {
       api.get('api/attribute', {
          params: { category_name },
@@ -67,11 +95,12 @@ const Attribute = () => {
          setAttributes(data);
       });
    };
-   const handleSubmit = (values) => {
-      api.post('api/attribute', { ...values, values: [] })
+   const handleSubmit1 = (values) => {
+      api.post('api/attribute', { ...values, categories: [values.categories], values: [] })
          .then((res) => {
             getAtt(category);
             notifySuccess('ویژگی با موفقیت ایجاد شد');
+            reset({ name: '', categories: '' });
          })
          .catch((err) => notifyError('خطا در ایجاد ویژگی'));
    };
@@ -86,39 +115,13 @@ const Attribute = () => {
       });
       api.post('api/attribute/value', { attributeId, values: arr })
          .then((res) => {
+            reset({ attributeId: '', label: '', value1: '' });
             getAtt(category);
             notifySuccess('مقادیر با موفقیت ایجاد شدند');
          })
-         .catch((err) => console.log(err));
+         .catch((err) => notifyError('خطا در ایجاد مقدار برای ویژگی'));
    };
-   useEffect(() => {
-      setAttFields([
-         {
-            name: 'attributeId',
-            label: 'ویژگی',
-            type: 'select',
-            options: attributes,
-            optionKey: 'id',
-            optionLabel: 'name',
-            required: true,
-            col: 12,
-         },
-         {
-            type: 'text',
-            name: `label1`,
-            label: 'لیبل (فارسی)',
-            col: 6,
-            required: true,
-         },
-         {
-            type: 'text',
-            name: `value1`,
-            label: 'مقدار (انگلیسی بدون فاصله)',
-            col: 6,
-            required: true,
-         },
-      ]);
-   }, [attributes]);
+
    return (
       <div className="flex flex-col gap-6">
          <SForm
@@ -185,9 +188,31 @@ const Attribute = () => {
                }
             />
             <CardContent>
-               {show === 1 && category && <SForm formStructure={fields} submitHandler={handleSubmit} disablePadding={true} />}
+               {
+                  show === 1 && category && (
+                     <form onSubmit={handleSubmit(handleSubmit1)} noValidate>
+                        <InputsGrid control={control} inputs={inputs1} />
+                        <div className="flex items-center justify-end gap-1 px-1 py-2">
+                           <Button type="submit">ثبت </Button>
+                           <Button variant="outlined" onClick={reset}>
+                              لغو
+                           </Button>
+                        </div>
+                     </form>
+                  )
+                  // <SForm formStructure={fields} submitHandler={handleSubmit} disablePadding={true} />
+               }
                {show === 2 && category && (
-                  <SForm formStructure={attFields} submitHandler={handleSubmit2} resetOnSubmit={false} disablePadding={true} />
+                  <form onSubmit={handleSubmit(handleSubmit2)} noValidate>
+                     <InputsGrid control={control} inputs={inputs2} />
+                     <div className="flex items-center justify-end gap-1 px-1 py-2">
+                        <Button type="submit">ثبت </Button>
+                        <Button variant="outlined" onClick={reset}>
+                           لغو
+                        </Button>
+                     </div>
+                  </form>
+                  // <SForm formStructure={attFields} submitHandler={handleSubmit2} resetOnSubmit={false} disablePadding={true} />
                )}
                <HoverTable
                   title="لیست ویژگی ها"
