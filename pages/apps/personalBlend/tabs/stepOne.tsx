@@ -248,8 +248,8 @@ const StepOne = ({ setOpenModal, editPhase, editData, setPage }: Props) => {
          rules: {
             required: 'پر کردن این فیلد الزامی میباشد.',
             pattern: {
-               value: /^.{5,500}$/,
-               message: 'حداقل 5 کاراکتر و حداکثر 500 کاراکتر.',
+               value: /^.{5,1000}$/,
+               message: 'حداقل 5 کاراکتر و حداکثر 1000 کاراکتر.',
             },
          },
       },
