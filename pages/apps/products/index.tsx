@@ -220,6 +220,10 @@ const Products = () => {
       // api.get('/admin/api/discount').then((res) => setDiscountCodes(res.data.discounts));
    }, []);
 
+   useEffect(() => {
+      mutate();
+   }, [page]);
+
    return (
       <PermissionChecker roles={['ADMIN', 'SELLER']}>
          <div className="flex flex-col gap-8">

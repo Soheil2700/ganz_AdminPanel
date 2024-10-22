@@ -218,6 +218,10 @@ const Products = () => {
       getAtt();
    }, []);
 
+   useEffect(() => {
+      mutate();
+   }, [page]);
+
    return (
       <PermissionChecker roles={['ADMIN', 'SELLER']}>
          <div className="flex flex-col gap-8">
