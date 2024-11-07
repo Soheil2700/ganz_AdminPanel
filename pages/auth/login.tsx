@@ -37,7 +37,7 @@ const Login = () => {
                .catch((err) => {});
          } else {
             api.post('api/auth/login', {
-               ...formValues,
+               password: formValues.password,
                mobile: formValues.mobile.replace('0', '+98'),
             })
                .then((res) => {

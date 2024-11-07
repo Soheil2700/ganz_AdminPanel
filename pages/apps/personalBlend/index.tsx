@@ -26,7 +26,6 @@ const Products = () => {
    const [openDetailModal, setOpenDetailModal] = useState(false);
    const [activeStep, setActiveStep] = useState(1);
    const [activeAttrStep, setActiveAttrStep] = useState(1);
-   const [categoryName, setCategoryName] = useState('');
    const [editData, setEditData] = useState({});
    const [editPhase, setEditPhase] = useState(false);
    const [proId, setProId] = useState(null);
@@ -35,7 +34,6 @@ const Products = () => {
    const [openPackageModal, setOpenPackageModal] = useState(false);
    const [openDiscountModal, setOpenDiscountModal] = useState(false);
    const [openAttributeModal, setOpenAttributeModal] = useState(false);
-   const [packageImage, setPackageImage] = useState({});
    const [attributes, setAttributes] = useState([]);
    const [attValue, setAttValue] = useState([]);
    const dispatch = useDispatch();

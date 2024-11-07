@@ -2,11 +2,14 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useCategoriesQuery } from '@/services/api/getCategoriesQuery.api';
 import SForm from '@/components/shared/formInputs/SForm';
 import api from '../../../services/interceptor';
-import { Button, Card, CardContent, CardHeader } from '@mui/material';
+import { Box, Button, Card, CardContent, CardHeader, Typography } from '@mui/material';
 import HoverTable from '../../../components/shared/tables/hoverTable';
 import { notifyError, notifySuccess } from '../../../components/shared/notify/SNotify';
 import InputsGrid from '../../../components/shared/formInputs/InputsGrid';
 import { useForm } from 'react-hook-form';
+import IconTrash from '@/components/Icon/IconTrash';
+import Modal from '@/components/shared/modal';
+import Stepper from '../../../components/shared/Stepper';
 
 const Attribute = () => {
    const [category, setCategory] = useState('');
@@ -14,6 +17,9 @@ const Attribute = () => {
    const [attributes, setAttributes] = useState([]);
    const { data: categories } = useCategoriesQuery();
    const { control, handleSubmit, reset } = useForm();
+   const [open, setOpen] = useState(false);
+   const [selectedAttributes, setSelectedAttributes] = useState([]);
+   const [activeAttrStep, setActiveAttrStep] = useState(2);
 
    const inputs1 = [
       {
@@ -95,6 +101,7 @@ const Attribute = () => {
          setAttributes(data);
       });
    };
+
    const handleSubmit1 = (values) => {
       api.post('api/attribute', { ...values, categories: [values.categories], values: [] })
          .then((res) => {
@@ -121,6 +128,77 @@ const Attribute = () => {
          })
          .catch((err) => notifyError('خطا در ایجاد مقدار برای ویژگی'));
    };
+
+   const AttrStep = [
+      {
+         label: 'حذف کلی ویژگی',
+         icon: <IconTrash className="h-5 w-5" />,
+         content: (
+            <Box>
+               <Typography>آیا می خواهید این ویژگی به همراه تمامی مقادیر آن را حذف کنید؟</Typography>
+               <Box sx={{ display: 'flex', gap: 1, justifyContent: 'center', mt: 2 }}>
+                  <Button
+                     onClick={() =>
+                        api
+                           .delete(`api/attribute/${selectedAttributes.id}`)
+                           .then((res) => {
+                              notifySuccess('ویژگی با موفقیت حذف شد');
+                           })
+                           .then((res) => {
+                              getAtt(category);
+                              setOpen(false);
+                           })
+                     }
+                  >
+                     بله مطمئنم
+                  </Button>
+                  <Button variant="outlined" onClick={() => setOpen(false)}>
+                     انصراف
+                  </Button>
+               </Box>
+            </Box>
+         ),
+      },
+      {
+         label: 'حذف مقدار ویژگی',
+         icon: <IconTrash className="h-5 w-5" />,
+         content: (
+            <Box
+               sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 1,
+               }}
+            >
+               {<h2 className="font-semibold">{selectedAttributes.name} :</h2>}
+               {selectedAttributes?.AttributeValue?.map((item) => (
+                  <div className="flex items-center justify-between rounded-lg bg-slate-200 px-5 py-1" key={item.id}>
+                     {item.label}{' '}
+                     <span
+                        onClick={() => {
+                           api.delete(`api/attribute/value`, { data: { values: [item.id] } })
+                              .then((res) => {
+                                 notifySuccess('ویژگی با موفقیت حذف شد');
+                              })
+                              .then((res) => {
+                                 setSelectedAttributes((prev) => ({
+                                    ...prev,
+                                    AttributeValue: prev.AttributeValue.filter((i) => i.id !== item.id),
+                                 }));
+                                 getAtt(category);
+                              })
+                              .catch(() => notifyError('خطا در حذف ویژگی'));
+                        }}
+                        className="flex cursor-pointer rounded-full p-1 text-black transition-all hover:text-primary"
+                     >
+                        <IconTrash className="w-4" />
+                     </span>
+                  </div>
+               ))}
+            </Box>
+         ),
+      },
+   ];
 
    return (
       <div className="flex flex-col gap-6">
@@ -222,15 +300,26 @@ const Attribute = () => {
                   ]}
                   tableData={attributes}
                   deleteIconOnClick={(val) => {
-                     api.delete(`api/attribute/${val.id}`)
-                        .then((res) => {
-                           notifySuccess('ویژگی با موفقیت حذف شد');
-                        })
-                        .then((res) => getAtt(category));
+                     setOpen(true);
+                     setSelectedAttributes(val);
+                     // api.delete(`api/attribute/${val.id}`)
+                     //    .then((res) => {
+                     //       notifySuccess('ویژگی با موفقیت حذف شد');
+                     //    })
+                     //    .then((res) => getAtt(category));
                   }}
                />
             </CardContent>
          </Card>
+         <Modal
+            title="حذف ویژگی"
+            size="medium"
+            content={
+               <Stepper steps={AttrStep} activeStep={activeAttrStep} setActiveStep={setActiveAttrStep} hideButtons={true} clickable />
+            }
+            open={open}
+            setOpen={setOpen}
+         />
       </div>
    );
 };

@@ -173,7 +173,7 @@ const StepOne = ({ setOpenModal, editPhase, editData, setPage }: Props) => {
          name: 'price',
          type: 'number',
          required: true,
-         rules: { required: 'پر کردن این فیلد الزامی میباشد.' },
+         rules: { required: 'پر کردن این فیلد الزامی میباشد.', max: { value: 10000000, message: 'رقم وارد شده بیش از حد مجاز است.' } },
       },
       {
          label: 'تصویر اصلی محصول',
