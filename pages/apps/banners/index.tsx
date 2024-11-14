@@ -128,10 +128,15 @@ const Banners = () => {
                      },
                   ]}
                   submitHandler={() => {
-                     const formData = new FormData();
-                     formData.append('image', image);
-                     formData.append('link', formValues.link);
-                     submitHandler(formData);
+                     if (image?.size > 1048576) {
+                        // 1 MB in bytes
+                        notifyError('حجم فایل باید کمتر از یک مگابایت باشد.');
+                     } else {
+                        const formData = new FormData();
+                        formData.append('image', image);
+                        formData.append('link', formValues.link);
+                        submitHandler(formData);
+                     }
                   }}
                />
             }
